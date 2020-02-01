@@ -76,5 +76,5 @@ Dialouge "Code dumped to main.dump.gs"
 Goto Main
 
 // All the stuff for different areas
-Include "data/script/testmap.gs"
+Include "data/script/map.gs"
 

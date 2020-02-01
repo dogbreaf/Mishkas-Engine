@@ -89,13 +89,13 @@ Sub gameObject.updateMovement( ByVal viewportX As Integer = 0, ByVal viewportY A
 End Sub
 
 Sub gameObject.moveTo( ByVal x As Integer, ByVal y As Integer )
-	this.target_posX = (x*32)+16
-	this.target_posY = (y*32)+16
+	this.target_posX = (x*__TILE_SIZE)+(__TILE_SIZE/2)
+	this.target_posY = (y*__TILE_SIZE)+(__TILE_SIZE/2)
 End Sub
 
 Sub gameObject.setPos( ByVal x As Integer, ByVal y As Integer )
-	this.xPosition = (x*32)+16
-	this.yPosition = (y*32)+16
+	this.xPosition = (x*__TILE_SIZE)+(__TILE_SIZE/2)
+	this.yPosition = (y*__TILE_SIZE)+(__TILE_SIZE/2)
 	
 	this.target_posX = xPosition
 	this.target_posY = yPosition

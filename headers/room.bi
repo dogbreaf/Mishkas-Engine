@@ -41,7 +41,7 @@ type room
 	objects(Any)	As gameObject
 	
 	'' Each element is the label in the code to jump to when the player steps onto that square
-	trigger(32,32)	As String
+	trigger(__MAP_SIZE,__MAP_SIZE)	As String
 	
 	'' These are needed so that triggers aren't re-activated until
 	'' the player leaves the tile
@@ -144,8 +144,8 @@ Sub room.LoadTileMap( ByVal tilemap As String )
 	this.map.refresh()
 	
 	' remove old triggers
-	For x As Integer = 0 to 32
-		For y As Integer = 0 to 32
+	For x As Integer = 0 to __MAP_SIZE
+		For y As Integer = 0 to __MAP_SIZE
 			this.trigger(x,y) = ""
 		Next
 	Next
@@ -275,14 +275,14 @@ End Sub
 
 Sub room.viewport()
 	'' Taken from old version
-	if player.posy > map.vp_h - marginY and map.vp_sy < (1024-map.vp_h) then
+	if player.posy > map.vp_h - marginY and map.vp_sy < ((__TILE_SIZE*__MAP_SIZE)-map.vp_h) then
 		map.vp_sy += player.walk_speed
 		player.posy -= player.walk_speed
 	elseif player.posy < marginY and map.vp_sy > 1 then
 		map.vp_sy -= player.walk_speed
 		player.posy += player.walk_speed
 	endif
-	if player.posx > map.vp_w - marginX and map.vp_sx < (1024-map.vp_w) then
+	if player.posx > map.vp_w - marginX and map.vp_sx < ((__TILE_SIZE*__MAP_SIZE)-map.vp_w) then
 		map.vp_sx += player.walk_speed
 		player.posx -= player.walk_speed
 	elseif player.posx < marginX and map.vp_sx > 1 then

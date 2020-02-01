@@ -109,8 +109,8 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 			gameRoom.LoadPlayerSprite(arg(2), val(arg(3)), val(arg(4)), val(arg(5)))
 			
 		Case "Position"
-			gameRoom.player.posx = (val( arg(2) )*32) + 16 - gameRoom.map.vp_sx
-			gameRoom.player.posy = (val( arg(3) )*32) + 16 - gameRoom.map.vp_sy
+			gameRoom.player.posx = (val( arg(2) )*__TILE_SIZE) + (__TILE_SIZE/2) - gameRoom.map.vp_sx
+			gameRoom.player.posy = (val( arg(3) )*__TILE_SIZE) + (__TILE_SIZE/2) - gameRoom.map.vp_sy
 			
 			' Fix the viewport position (this is kind of a hack I wrote 
 			' the player and viewport code a long time ago and can't get it

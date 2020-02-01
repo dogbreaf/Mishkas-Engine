@@ -19,8 +19,8 @@ End Type
 Sub player.onTile( ByVal x As Integer, ByVal y As Integer, ByRef room As Screen, ByRef tx As Integer, ByRef ty As Integer )
 	' Calculate the tile the player is currently positioned over
 
-	tx = (x-room.vp_x+room.vp_sx-this.refx)/32
-	ty = (y-room.vp_y+room.vp_sy-this.refy)/32
+	tx = (x-room.vp_x+room.vp_sx-this.refx)/__TILE_SIZE
+	ty = (y-room.vp_y+room.vp_sy-this.refy)/__TILE_SIZE
 End Sub
 
 Sub player.onTile( ByRef room As Screen, ByRef tx As Integer, ByRef ty As Integer )

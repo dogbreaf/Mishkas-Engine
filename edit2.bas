@@ -1,21 +1,28 @@
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' New version map editor
+''
+'' Not really meant to be super neat code but I didn't want it to be as 
+'' messy and unmaintainable as the old code.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+'' Screen resoloution
 #define __XRES__ 1280
 #define __YRES__ 620
 
+'' Window dimensions
 #define __WIN_WIDTH__ 256
 #define __WIN_PROPERTIES_HEIGHT__ 128
 #define __WIN_EDIT_HEIGHT__ 128
 #define __WIN_TOOLS_HEIGHT__ ( __YRES__ - __WIN_PROPERTIES_HEIGHT__ - __WIN_EDIT_HEIGHT__ )
 
+'' Icon characters (see font reference)
 #define __CHR_LAYER_VIS__ Chr(219)
 #define __CHR_LAYER_NON_VIS__ Chr(254)
 
 #define __CHR_EDITING__ Chr(16)
 #define __CHR_EDIT__ "E"
 
+'' When to snap to the maximum scroll
 #define __SCROLL_SNAP__ 45
 
 '' Hotkeys
@@ -35,6 +42,9 @@
 #define _HK_SET_FG fb.SC_E
 #define _HK_SET_BG fb.SC_R
 
+#define _HK_SIZE_UP &h1B
+#define _HK_SIZE_DN &h1A
+
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 '' UI toolkit
@@ -52,13 +62,6 @@
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Initialisation
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-'' Edit modes
-enum EditMode
-	Mode_Place	'' The default mode
-	Mode_Select	'' Select an area
-	Mode_Paste	'' Paste a previously copied area
-end enum
 
 '' Loading Screen
 ScreenRes __XRES__, __YRES__, 32
@@ -80,7 +83,7 @@ Dim As Boolean		wasSaved = true
 Dim As Screen		map
 
 '' Triggers for code template
-Dim As String		trigger(32,32)
+Dim As String		trigger(__MAP_SIZE,__MAP_SIZE)
 
 '' Editor
 Dim As Integer		EditLayer
@@ -90,10 +93,7 @@ Dim As Boolean		HideLayer(__LAYER_COUNT__)
 Dim As Integer		EditX
 Dim As Integer		EditY
 
-Dim As Integer		SelectionX1
-Dim As Integer		SelectionY1
-Dim As Integer		SelectionX2
-Dim As Integer		SelectionY2
+Dim As Integer		SelectionSize = (32/__TILE_SIZE)
 
 '' The tiles selected to be placed
 Dim As Integer		EditTile1ID = 1
@@ -101,9 +101,6 @@ Dim As Integer		EditTile2ID
 
 '' Palette scroll
 Dim As Integer		paletteScroll
-
-'' The current edit more
-Dim as EditMode		Mode = Mode_Place
 
 '' Wether to show flags on the tilemap
 Dim As Boolean		showDebug
@@ -281,6 +278,7 @@ Do
 	Endif
 	wasSaved = ChangesSaved
 	
+	'' If we need to use print for debugging, reset the cursor location
 	Locate 6,1
 	
 	ScreenLock
@@ -297,7 +295,8 @@ Do
 		Next
 		
 		'' Draw the palette
-		put Win_Palette.Context.Buffer, ( 4, 24 ), map.scr_tileset, (0, paletteScroll*32)-STEP(512,__WIN_WIDTH__ - 32), PSET
+		put Win_Palette.Context.Buffer, ( 4, 24 ), map.scr_tileset, _
+			(0, paletteScroll*__TILE_SIZE)-STEP(512,__WIN_WIDTH__ - __TILE_SIZE), PSET
 		
 		' Draw the selected tile
 		drawTile(map.tiles(editX, editY).tID(EditLayer), 4, 24, @map, Win_TileProperties.Context.Buffer)
@@ -307,17 +306,20 @@ Do
 		drawTile(EditTile2ID, 4, 64, @map, Win_Edit.Context.Buffer)
 		
 		'' Draw the selection boxes
-		selectBox( (EditX*32) + map.vp_x - map.vp_sx, (EditY*32) + map.vp_y - map.vp_sy, 32, 32, rgb(255,200,0) )
+		selectBox( (EditX*__TILE_SIZE) + map.vp_x - map.vp_sx, (EditY*__TILE_SIZE) + map.vp_y - map.vp_sy, _
+			__TILE_SIZE*SelectionSize, __TILE_SIZE*SelectionSize, rgb(255,200,0) )
 		
 		'' palette tiles
 		Scope
 			Dim As Integer tx,ty
 			
-			_tm_1to2d( EditTile1ID, 16, tx, ty )
-			selectBox( 5 + (32*tx), 25 + (32*ty) - (32*paletteScroll), 32, 32, rgb(100,255,80), Win_Palette.context.buffer )
+			_tm_1to2d( EditTile1ID, __TILESET_WIDTH, tx, ty )
+			selectBox( 5 + (__TILE_SIZE*tx), 25 + (__TILE_SIZE*ty) - (__TILE_SIZE*paletteScroll), _
+				__TILE_SIZE*SelectionSize, __TILE_SIZE*SelectionSize, rgb(100,255,80), Win_Palette.context.buffer )
 			
-			_tm_1to2d( EditTile2ID, 16, tx, ty )
-			selectBox( 3 + (32*tx), 23 + (32*ty) - (32*paletteScroll), 32, 32, rgb(80,100,255), Win_Palette.context.buffer )
+			_tm_1to2d( EditTile2ID, __TILESET_WIDTH, tx, ty )
+			selectBox( 3 + (__TILE_SIZE*tx), 23 + (__TILE_SIZE*ty) - (__TILE_SIZE*paletteScroll), _
+				__TILE_SIZE*SelectionSize, __TILE_SIZE*SelectionSize, rgb(80,100,255), Win_Palette.context.buffer )
 		End Scope
 		
 		' Update GUI
@@ -438,7 +440,20 @@ Do
 		map.tiles(EditX,EditY).tID(EditLayer) = EditTile2ID
 		map.refresh()
 		
+	'' Resize the selection
+	ElseIf userHotKey(_HK_SIZE_UP) Then
+		SelectionSize += 1
+	ElseIf userHotKey(_HK_SIZE_DN) Then
+		SelectionSize -= 1
+		
 	EndIf
+	
+	'' Sanitize some values
+	If SelectionSize < 1 Then
+		SelectionSize = 1
+	ElseIf SelectionSize > __TILESET_WIDTH/2 Then
+		SelectionSize = __TILESET_WIDTH/2
+	Endif
 	
 	If EditLayer < 0 Then
 		EditLayer = 0
@@ -454,10 +469,12 @@ Do
 		if (tilemap <> "") then
 			'' Update header
 			map.fileHeader.magic = __FH_MAGIC__
-			map.fileHeader.tmWidth = 32
-			map.fileHeader.tmHeight = 32
+			map.fileHeader.tmWidth = __MAP_SIZE
+			map.fileHeader.tmHeight = __MAP_SIZE
 			
 			map.fileHeader.reservedString = "Created with EDIT2"
+			
+			map.fileHeader.tileSize = __TILE_SIZE
 			
 			'' Write to file
 			Dim hndl As Integer = Freefile
@@ -476,10 +493,15 @@ Do
 		endif
 	ElseIf Btn_ToolsFill.onClick() Then
 		If uiDlgConfirm("Are you sure you want to fill layer " & (EditLayer + 1) & " with tile " & EditTile1ID & "?") Then
-			For y As Integer = 0 to 32
-				For x As Integer = 0 to 32
-					LoadingIndicator("Filling layer...", "(" & ((y*32)+x) & "/" & (32*32) & ")")
-					map.tiles(x,y).tID(EditLayer) = EditTile1ID
+			For y As Integer = 0 to __MAP_SIZE-SelectionSize STEP SelectionSize
+				For x As Integer = 0 to __MAP_SIZE-SelectionSize STEP SelectionSize
+					LoadingIndicator("Filling layer...", "(" & ((y*__MAP_SIZE)+x) & "/" & (__MAP_SIZE^2) & ")")
+					
+					For sx As Integer = 0 to SelectionSize-1
+						For sy As Integer = 0 to SelectionSize-1
+							map.tiles(x+sx, y+sy).tID(EditLayer) = EditTile1ID + sx + (sy*__TILESET_WIDTH)
+						Next
+					Next
 				Next
 			Next
 			
@@ -489,9 +511,9 @@ Do
 		
 	Elseif Btn_Clear.onClick() Then
 		If uiDlgConfirm("Are you sure you want to clear layer " & (EditLayer + 1) & "?") Then
-			For y As Integer = 0 to 32
-				For x As Integer = 0 to 32
-					LoadingIndicator("Filling layer...", "(" & ((y*32)+x) & "/" & (32*32) & ")")
+			For y As Integer = 0 to __MAP_SIZE
+				For x As Integer = 0 to __MAP_SIZE
+					LoadingIndicator("Filling layer...", "(" & ((y*__MAP_SIZE)+x) & "/" & (__MAP_SIZE^2) & ")")
 					map.tiles(x,y).tID(EditLayer) = 0
 				Next
 			Next
@@ -507,7 +529,13 @@ Do
 		Sleep 200,1
 		
 	ElseIf Btn_AddTrigger.onClick() Then
-		trigger(EditX, EditY) = uiDlgInput("Code label name:","Clear",, trigger(EditX, EditY))
+		Dim As String label = uiDlgInput("Code label name:","Clear",, trigger(EditX, EditY))
+		
+		For sx As Integer = 0 to SelectionSize-1
+			For sy As Integer = 0 to SelectionSize-1
+				trigger(EditX+sx, EditY+sy) = label
+			Next
+		Next
 		
 	ElseIf Btn_LoadTileSet.onClick() Then
 		Dim As String ret = uiDlgInput("Tile set file path:",,,tileset)
@@ -549,8 +577,8 @@ Do
 			Print #hndl, ""
 			
 			'' Add the trigger statements
-			For y As Integer = 0 to 32
-				For x As Integer = 0 to 32
+			For y As Integer = 0 to __MAP_SIZE
+				For x As Integer = 0 to __MAP_SIZE
 					If trigger(x,y) <> "" Then
 						Print #hndl, "Trigger " & x & " " & y & " " & trigger(x,y)
 					Endif
@@ -563,8 +591,8 @@ Do
 			Print #hndl, "// Trigger code segments"
 			
 			'' Add empty code snippets
-			For y As Integer = 0 to 32
-				For x As Integer = 0 to 32
+			For y As Integer = 0 to __MAP_SIZE
+				For x As Integer = 0 to __MAP_SIZE
 					If trigger(x,y) <> "" Then
 						Print #hndl, ":" & trigger(x,y)
 						
@@ -627,7 +655,21 @@ Do
 	
 	For i As Integer = 0 to 3
 		If Btn_TglFlag(i).onClick() Then
-			map.tiles(EditX,EditY).flag(i) = not map.tiles(EditX,EditY).flag(i)
+			If Multikey(fb.SC_CONTROL) Then
+				map.tiles(EditX, EditY).flag(i) = not map.tiles(EditX, EditY).flag(i)
+			Else
+				Dim As Boolean	setFlag = not map.tiles(EditX, EditY).flag(i)
+				
+				For sx As Integer = 0 to SelectionSize-1
+					For sy As Integer = 0 to SelectionSize-1
+						map.tiles(EditX+sx, EditY+sy).flag(i) = setFlag
+					Next
+				Next
+			Endif
+			
+			If ShowDebug Then
+				map.refresh(ShowDebug)
+			Endif
 			
 			changesSaved = false
 			Sleep 200,1
@@ -638,8 +680,8 @@ Do
 	If inBounds( mouseX, mouseY, map.vp_x, map.vp_y, map.vp_x + map.vp_w, map.vp_y + map.vp_h) Then
 		If ( mouseButtons and 1 ) and Multikey(fb.SC_ALT) Then
 			'' Viewport scrolling
-			map.vp_sx = ( (mouseX-map.vp_x) / map.vp_w ) * (32*32)
-			map.vp_sy = ( (mouseY-map.vp_y) / map.vp_h ) * (32*32)
+			map.vp_sx = ( (mouseX-map.vp_x) / map.vp_w ) * (__TILE_SIZE*__MAP_SIZE)
+			map.vp_sy = ( (mouseY-map.vp_y) / map.vp_h ) * (__TILE_SIZE*__MAP_SIZE)
 			
 			' If the viewport is wide enough don't scroll
 			If map.vp_w > 1000 Then
@@ -649,29 +691,42 @@ Do
 			' snap to edges
 			If map.vp_sx < __SCROLL_SNAP__ Then
 				map.vp_sx = 0
-			ElseIf map.vp_sx > ((1024-map.vp_w)-__SCROLL_SNAP__) Then
-				map.vp_sx = (1024-map.vp_w)
+			ElseIf map.vp_sx > (((__TILE_SIZE*__MAP_SIZE)-map.vp_w)-__SCROLL_SNAP__) Then
+				map.vp_sx = ((__TILE_SIZE*__MAP_SIZE)-map.vp_w)
 			Endif
 			
 			If map.vp_sy < __SCROLL_SNAP__ Then
 				map.vp_sy = 0
-			ElseIf map.vp_sy > ((1024-map.vp_h)-__SCROLL_SNAP__) Then
-				map.vp_sy = (1024-map.vp_h)
+			ElseIf map.vp_sy > (((__TILE_SIZE*__MAP_SIZE)-map.vp_h)-__SCROLL_SNAP__) Then
+				map.vp_sy = ((__TILE_SIZE*__MAP_SIZE)-map.vp_h)
 			Endif
+			
+		''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 		ElseIf ( mouseButtons and 1 ) or ( mouseButtons and 2) Then
 			'' Set tile to be edited
-			EditX = ( mouseX - map.vp_x + map.vp_sx - 16 ) / 32
-			EditY = ( mouseY - map.vp_y + map.vp_sy - 16 ) / 32
+			EditX = ( mouseX - map.vp_x + map.vp_sx - (__TILE_SIZE/2) ) / __TILE_SIZE
+			EditY = ( mouseY - map.vp_y + map.vp_sy - (__TILE_SIZE/2) ) / __TILE_SIZE
 			
 			'' Hold control to set tile, otherwise just pick the tile
 			If Multikey(fb.SC_CONTROL) Then
-				map.tiles(EditX, EditY).tID(EditLayer) = IIF( mouseButtons and 1, EditTile1ID, EditTile2ID )
+				Dim As Integer	setTile = IIF( mouseButtons and 1, EditTile1ID, EditTile2ID )
+				
+				For sx As Integer = 0 to SelectionSize-1
+					For sy As Integer = 0 to SelectionSize-1
+						map.tiles(EditX+sx, EditY+sy).tID(EditLayer) = setTile + sx + (sy*__TILESET_WIDTH)
+					Next
+				Next
 				
 				map.refresh(showDebug)
 				changesSaved = false
-			Elseif Multikey(fb.SC_LSHIFT) Then
-				showDebug = true
 				
+			'' Hold shift to set/unset collision
+			Elseif Multikey(fb.SC_LSHIFT) Then
+				'' Enable debug and reset the selection size so we can see what we are doing
+				showDebug = true
+				SelectionSize = 1
+				
+				'' Set the solid flag appropriately
 				map.tiles(EditX, EditY).solid = IIF( mouseButtons and 1, true, false )
 				map.refresh(showDebug)
 				changesSaved = false
@@ -705,23 +760,23 @@ Do
 		If ( mouseButtons and 1 ) Then
 			Dim As Integer stx, sty
 			
-			stx = ( mouseX - plx - 8 ) / 32
-			sty = ( mouseY - ply - 8 ) / 32
+			stx = ( mouseX - plx - 8 ) / __TILE_SIZE
+			sty = ( mouseY - ply - 8 ) / __TILE_SIZE
 			
 			sty += paletteScroll
 			
-			EditTile1ID = ( sty * 16 ) + stx
+			EditTile1ID = ( sty * __TILESET_WIDTH ) + stx
 		Endif
 		
 		If ( mouseButtons and 2 ) Then
 			Dim As Integer stx, sty
 			
-			stx = ( mouseX - plx - 8 ) / 32
-			sty = ( mouseY - ply - 8 ) / 32
+			stx = ( mouseX - plx - 8 ) / __TILE_SIZE
+			sty = ( mouseY - ply - 8 ) / __TILE_SIZE
 			
 			sty += paletteScroll
 			
-			EditTile2ID = ( sty * 16 ) + stx
+			EditTile2ID = ( sty * __TILESET_WIDTH ) + stx
 		Endif
 	Endif
 	End Scope
@@ -767,10 +822,11 @@ Sub drawTile( ByVal tID As Integer, ByVal x As Integer, ByVal y As Integer, ByVa
 	
 	' Calculate tile position in the tilemap
 	Dim As Integer tx, ty
-	_tm_1to2d( tID, 16, tx, ty)
+	_tm_1to2d( tID, __TILESET_WIDTH, tx, ty)
 	
 	' Draw the specific tile
-	Put target, (x,y), tilemap->scr_tileset, (tx*32, ty*32)-STEP(31,31), PSET
+	Put target, (x,y), tilemap->scr_tileset, _
+		(tx*__TILE_SIZE, ty*__TILE_SIZE)-STEP(31,31), PSET
 End sub
 
 ' Draw a checkerboard pattern for transparent images
@@ -805,8 +861,8 @@ End Sub
 Sub SelectBox( ByVal x As Integer, ByVal y As Integer, ByVal w As Integer, ByVal h As Integer, _
 	ByVal colour As Integer = rgb(200,0,180), Byval target As Any Ptr = 0 )
 	
-	Line target, (x,y)-STEP(w,h), colour or rgb(20,20,20), B
-	Line target, (x-1,y-1)-STEP(w+2,h+2), colour, B
+	Line target, (x,y)-STEP(w-1,h-1), colour or rgb(20,20,20), B
+	Line target, (x-1,y-1)-STEP(w+1,h+1), colour, B
 End Sub
 
 ' Let the user know something is happening

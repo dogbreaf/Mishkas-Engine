@@ -3,8 +3,19 @@
 
 ' Changing the number of layers will break binary compatability with old files, so probs dont
 #define __LAYER_COUNT__ 3
-#define __TILESET_PAGES__ 4
 
+'' When choosing what size tiles should be, only tile size needs to be changed, everything else will fix it's self
+
+' The pixel dimensions of one tile and
+' The size of one map in tiles
+#define __TILE_SIZE 16
+#define __MAP_SIZE (1024/__TILE_SIZE)
+
+' Tileset dimensions
+#define __TILESET_PAGES__ 4
+#define __TILESET_WIDTH ( 512 / __TILE_SIZE )
+
+' static file header data
 #define __FH_MAGIC__ "TILEMAP.V2"
 
 Declare Function _tm_1to2d(ByVal i As Integer, ByVal xSize As Integer, ByRef x As Integer, ByRef y As Integer) As Integer
@@ -28,10 +39,12 @@ End Type
 Type tilemapHeader
 	magic		As String*10 = __FH_MAGIC__
 	
-	tmWidth		As Integer = 32
-	tmHeight	As Integer = 32
+	tmWidth		As Integer = __MAP_SIZE
+	tmHeight	As Integer = __MAP_SIZE
 	
-	reservedInt(8)	As Integer
+	tileSize	As Integer = __TILE_SIZE
+	
+	reservedInt(7)	As Integer
 	
 	ReservedString	As String*32
 End Type
@@ -57,7 +70,7 @@ Type screen
 	vp_sy As Integer
 
 	' Tilemap data
-	tiles(32,32) As Tile           ' The tilemap data
+	tiles(__MAP_SIZE,__MAP_SIZE) As Tile           ' The tilemap data
 
 	'
 	Declare Sub init( ByVal As String = "", ByVal As String = "" )
@@ -93,37 +106,39 @@ End Sub
 
 Sub screen.refresh( ByVal debug As Integer = 0 )
 	For i As Integer = 0 to __LAYER_COUNT__
-		Line scr_buffer(i), (0,0)-(1024,1024), rgb(255,0,255), BF
+		Line scr_buffer(i), (0,0)-(__MAP_SIZE*__TILE_SIZE,__MAP_SIZE*__TILE_SIZE), rgb(255,0,255), BF
 		
 		' Three dimensional For is kind of ugly and gross
-		For y As Integer = 0 to 32
-			For x As Integer = 0 to 32
+		For y As Integer = 0 to __MAP_SIZE
+			For x As Integer = 0 to __MAP_SIZE
 				Dim As Integer tx,ty
 
-				_tm_1to2d(tiles(x,y).tID(i), 16, tx, ty)
+				_tm_1to2d(tiles(x,y).tID(i), __TILESET_WIDTH, tx, ty)
 
-				tx = tx*32
-				ty = ty*32
+				tx = tx*__TILE_SIZE
+				ty = ty*__TILE_SIZE
 
 				if tx > 512 then:tx = 0:endif
 				if ty > 512*__TILESET_PAGES__ then:ty = 0:endif
 
-				Put scr_buffer(i), (x*32, y*32), scr_tileset, (tx,ty)-STEP(31,31), TRANS
+				Put scr_buffer(i), (x*__TILE_SIZE, y*__TILE_SIZE), scr_tileset, _
+					(tx,ty)-STEP(__TILE_SIZE-1,__TILE_SIZE-1), TRANS
 			Next
 		Next
 	Next
 	
 	if debug then
-		For y As Integer = 0 to 32
-		For x As Integer = 0 to 32
+		For y As Integer = 0 to __MAP_SIZE
+		For x As Integer = 0 to __MAP_SIZE
 			if tiles(x,y).solid then
-				line scr_buffer(__LAYER_COUNT__), (x*32,y*32)-STEP(31,31), rgb(255,0,0), B
+				line scr_buffer(__LAYER_COUNT__), (x*__TILE_SIZE,y*__TILE_SIZE)-STEP(__TILE_SIZE-1,__TILE_SIZE-1), _
+					rgb(255,0,0), B
 			endif
 
 			For j As Integer = 0 to 3
 				if tiles(x,y).flag(j) then
 					line scr_buffer(__LAYER_COUNT__), _
-						((x*32)+(4*j),y*32)-STEP(4,4), _
+						((x*__TILE_SIZE)+(4*j),y*__TILE_SIZE)-STEP(4,4), _
 						rgb(50*j,255-(50*j),255), BF
 				endif
 			Next
@@ -133,25 +148,23 @@ Sub screen.refresh( ByVal debug As Integer = 0 )
 End Sub
 
 Sub screen.draw(ByVal LayerNumber As Integer = 0 )
-	if vp_sx < 0 then:vp_sx = 1024 - vp_sx:endif
-	if vp_sy < 0 then:vp_sy = 1024 - vp_sy:endif
+	if vp_sx < 0 then:vp_sx = __MAP_SIZE*__TILE_SIZE - vp_sx:endif
+	if vp_sy < 0 then:vp_sy = __MAP_SIZE*__TILE_SIZE - vp_sy:endif
 
-	if vp_sx > 1024 then:vp_sx = vp_sx - 1024:endif
-	if vp_sy > 1024 then:vp_sy = vp_sy - 1024:endif
+	if vp_sx > __MAP_SIZE*__TILE_SIZE then:vp_sx = vp_sx - __MAP_SIZE*__TILE_SIZE:endif
+	if vp_sy > __MAP_SIZE*__TILE_SIZE then:vp_sy = vp_sy - __MAP_SIZE*__TILE_SIZE:endif
 
 	Put (vp_x, vp_y), scr_buffer(LayerNumber), (vp_sx, vp_sy)-STEP(vp_w, vp_h), TRANS
 End Sub
 
 Sub screen.init( ByVal tileset As String = "", ByVal tilemap As String = "" )
-	' Tilesets must be 512x512 pixels containing 256 32x32 pixel tiles for simplicity
-	' if the tilset image does not fit it will be placed at the top left or cropped
-	' The internal tilemap is always 32x32 tiles
+	'' The buffer for the tileset
 	this.scr_tileset = imagecreate(512,512*__TILESET_PAGES__)
 	
 	For i As Integer = 0 to __LAYER_COUNT__
-		this.scr_buffer(i)  = imagecreate(1024,1024)
+		this.scr_buffer(i)  = imagecreate(__MAP_SIZE*__TILE_SIZE,__MAP_SIZE*__TILE_SIZE)
 		
-		Line this.scr_buffer(i),  (0,0)-(1024,1024), rgb(255,0,255), BF
+		Line this.scr_buffer(i),  (0,0)-(__MAP_SIZE*__TILE_SIZE,__MAP_SIZE*__TILE_SIZE), rgb(255,0,255), BF
 	Next
 
 	' Set viewport defaults
@@ -173,7 +186,7 @@ Sub screen.init( ByVal tileset As String = "", ByVal tilemap As String = "" )
 End Sub
 
 Function _tm_1to2d(ByVal i As Integer, ByVal xSize As Integer, ByRef x As Integer, ByRef y As Integer) As Integer
-	'' There must be a faster way but I don't know what it is
+	'' There must be a faster way but I don't know what it is and my other soloutions have failed
 	Dim As Integer ti = 0
 	
 	For ty As Integer = 0 to (xSize*__TILESET_PAGES__)-1
