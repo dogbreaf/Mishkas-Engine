@@ -331,7 +331,8 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 
 	Select Case arg(0)
 	
-	Case "Dialouge"
+	'' I can't spell and I wrote this so it caters to me hahahahahah
+	Case "Dialouge","Dialogue"
 		dialouge( arg(1), IIF( arg(2) = "false", false, true) )
 		Return -1
 		
