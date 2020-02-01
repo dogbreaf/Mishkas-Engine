@@ -4,6 +4,9 @@ Player SimpleCollision
 
 TextSpeed 20
 
+// Dummy attack routine
+//ActionTrigger Attack
+
 // Load the main area
 Goto LoadTemplate
 
@@ -73,6 +76,11 @@ Goto Main
 :DumpCode
 Dump "main.dump.gs"
 Dialouge "Code dumped to main.dump.gs"
+Goto Main
+
+//
+:Attack
+Dialouge "You have no weapon."
 Goto Main
 
 // All the stuff for different areas

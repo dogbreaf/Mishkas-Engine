@@ -100,6 +100,13 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 	'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 	'' Player Control
 	'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''	
+	Case "ActionTrigger"
+		' the trigger to activate when the player presses the action button
+		' See kbd_Attack in controls.bi for the control mapping
+		gameRoom.attackTrigger = arg(1)
+		
+		Return -1
+		
 	Case "Player"
 	
 		Select Case arg(1)

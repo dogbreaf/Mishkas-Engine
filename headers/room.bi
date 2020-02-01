@@ -35,13 +35,13 @@ type room
 	'' The screen margin around the player
 	marginY		As Integer = ((__YRES/__SCALE)/2)-2
 	marginX		As Integer = ((__XRES/__SCALE)/2)-2
-	
-	'' TODO make routines for adding and manipulating different sprites
-	'' for NPCs etc. 
+
 	objects(Any)	As gameObject
 	
 	'' Each element is the label in the code to jump to when the player steps onto that square
 	trigger(__MAP_SIZE,__MAP_SIZE)	As String
+	
+	attackTrigger	As String ' The attack trigger 
 	
 	'' These are needed so that triggers aren't re-activated until
 	'' the player leaves the tile
@@ -202,6 +202,11 @@ Function room.getTrigger() As String
 			Endif
 		Endif
 	Next
+	
+	'' Attack/jump/action key trigger ''''''''''''''''''''''''''''''''''
+	If getUserkey(kbd_Attack, False) Then
+		Return this.attackTrigger
+	Endif
 	
 	'' Map tile triggers''''''''''''''''''''''''''''''''''''''''''''''''
 	'' Flag 3 means a trigger wont trigger unless the player presses 'e'

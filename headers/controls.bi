@@ -5,7 +5,7 @@ enum inputAction
 	kbd_Right
 	
 	kbd_Action
-	kbd_Atack
+	kbd_Attack
 	kbd_Quit
 	kbd_Close
 end enum
@@ -39,7 +39,7 @@ Function getUserKey( ByVal action As inputAction, ByVal waitForKeyUp As Boolean 
 		Key1 = fb.SC_ENTER
 		Key2 = fb.SC_E
 		
-	Case kbd_Atack
+	Case kbd_Attack
 		Key1 = fb.SC_SPACE
 		Key2 = -1
 		
