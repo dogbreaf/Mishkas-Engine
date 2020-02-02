@@ -4,22 +4,6 @@ Player SimpleCollision
 
 TextSpeed 20
 
-Text Add "This is a test of the 'fullscreen' text dialouge box."
-Text Add "It should have proper newlines etc."
-Text Add 
-Text Add "Lorum Ipsum stuff"
-Text Add 
-Text Add "Choose an option:"
-Text Show false
-
-Option Add Next "Option 1 text"
-Option Add Next "Option 2 text"
-Option Add Next "Option 3 text"
-Option Add Next "Option 4 text"
-Option SelectBig
-
-:Next
-
 // Dummy attack routine
 //ActionTrigger Attack
 

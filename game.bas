@@ -32,6 +32,9 @@
 ' Draws menus and text and stuff
 #include "headers/text.bi"
 
+' Manages inventory
+#include "headers/inventory.bi"
+
 ' Scriptable
 #include "headers/script.bi"
 
