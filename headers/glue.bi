@@ -419,3 +419,45 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 	End Select
 End Function
 
+Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr ) As Integer
+	Static As inventoryManager inv	' The inventory
+	
+	Select Case arg(0)
+	
+	Case "Inventory"
+		Select Case arg(1)
+		
+		Case "Add"
+			Dim As String itemTrigger	= arg(2)
+			Dim As String itemName		= arg(3)
+			Dim As Integer quantity		= val(arg(4))
+			Dim As Boolean keyItem		= IIF(arg(5) = "true", true, false)
+			
+			inv.addItem(itemName, quantity, itemTrigger, keyItem)
+			
+			Return -1
+			
+		Case "Rem"
+			inv.remItem(arg(2), IIF(arg(3) = "", 1, val(arg(3))))
+			
+			Return -1
+			
+		Case "Save"
+			inv.saveInventory(arg(2))
+			
+			Return -1
+			
+		Case "Load"
+			inv.loadInventory(arg(2))
+		
+		End Select
+		
+		thisScript->sendError("Unknown inventory function, '" & arg(1) & "'")
+		Return 0
+		
+	Case Else
+		Return 0
+		
+	End Select
+End Function
+
