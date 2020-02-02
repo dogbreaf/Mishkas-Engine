@@ -327,7 +327,8 @@ End Function
 '' Menu and text procedures
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
-	Static As userChooser	selector
+	Static As userChooser	selector	' For adding options to 
+	Static As String	textScreen	' The full screen text
 
 	Select Case arg(0)
 	
@@ -365,6 +366,24 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 		
 		Return -1
 		
+	Case "Text"
+		Select Case arg(1)
+		
+		Case "Add"
+			textScreen += arg(2) & chr(10)
+			Return -1
+			
+		Case "Show"
+			bigDialouge(textScreen, IIF( arg(2) = "false", false, true ))
+			textScreen = ""
+			
+			Return -1
+			
+		End Select
+		
+		thisScript->sendError("Text does not have an option '" & arg(1) & "'")
+		Return 0
+		
 	Case "Option"
 		Dim As String gotoLabel
 		
@@ -375,6 +394,9 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 		
 		Case "Select"
 			gotoLabel = selector.ChooseOption( arg(2) )
+			
+		Case "SelectBig"
+			gotoLabel = selector.ChooseOption( "", true )
 			
 		Case Else
 			thisScript->sendError("Expected Add or Choose, found '" & arg(1) & "'")

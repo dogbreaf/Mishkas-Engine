@@ -183,6 +183,25 @@ Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
 	Endif
 End Sub
 
+'' Large full screen box of text
+Sub bigDialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
+	Dim As Integer	boxWidth = __XRES-64
+	Dim As Integer	boxHeight = __YRES - 256
+	
+	Dim As Integer	posX = (__XRES/2)-(boxWidth/2) 
+	Dim As Integer	posY = 32
+	
+	menuBox( posX, posY, boxWidth, boxHeight )
+	drawText( text, posX + 16, posY + 16, (boxWidth/8)-4, textSpeed )
+	
+	If confirmBtn Then
+		waitNext( posX + boxWidth - 24, posY + boxHeight - 20 )
+		
+		menuBox( posX, posY, boxWidth, boxHeight )
+		Sleep 100,1
+	Endif
+End Sub
+
 Function confirm( ByVal gotoLabel As String, ByVal message As String = "" ) As String
 	Dim As fb.Image Ptr	thisScreen
 	Dim As _option		yesNo(1)
@@ -224,7 +243,7 @@ Type userChooser
 	options(Any)	As _option
 	
 	Declare Sub AddOption( ByVal As String, ByVal As String )
-	Declare Function chooseOption( ByVal As String ) As String
+	Declare Function chooseOption( ByVal message As String, ByVal bottom As Boolean = false ) As String
 End Type
 
 Sub userChooser.AddOption( ByVal optionName As String, ByVal jumpLabel As String )
@@ -236,7 +255,7 @@ Sub userChooser.AddOption( ByVal optionName As String, ByVal jumpLabel As String
 	options(count).label = jumpLabel
 End Sub
 
-Function userChooser.chooseOption( ByVal message As String ) As String
+Function userChooser.chooseOption( ByVal message As String, ByVal bottom As Boolean = false ) As String
 	Dim As fb.Image Ptr	thisScreen
 	
 	Dim As Integer		boxWidth = __XRES/6
@@ -245,6 +264,14 @@ Function userChooser.chooseOption( ByVal message As String ) As String
 	'' Should be positioned correctly for the dialouge box
 	Dim As Integer		posX = (__XRES/2) + (IIF(__XRES < 512, (__XRES-32)/2, 256)-boxWidth) 
 	Dim As Integer		posY = (__YRES-IIF(__XRES < 512, 128, 192)) - (boxHeight+20)
+	
+	If bottom Then
+		boxWidth = __XRES-64
+		boxHeight = 128
+		
+		posX = 32
+		posY = __YRES - (boxHeight + IIF(__XRES < 512, 16, 64))
+	Endif
 	
 	Dim As String		ret
 	
