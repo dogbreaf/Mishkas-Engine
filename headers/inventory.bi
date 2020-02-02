@@ -114,8 +114,34 @@ Function inventoryManager.useItem( ByVal itemName As String ) As String
 End Function
 
 Sub inventoryManager.saveInventory( ByVal fileName As String )
+	Dim As Integer file = FreeFile
+	Dim As Integer itemCount = UBound(this.item)
+	
+	Open fileName For Binary As #file
+	
+	Put #file,,itemCount
+	
+	For i As Integer = 0 to itemCount
+		Put #file,,item(i)
+	Next
+	
+	Close #file
 End Sub
 
 Sub inventoryManager.loadInventory( ByVal fileName As String )
+	Dim As Integer file = FreeFile
+	Dim As Integer itemCount
+	
+	Open fileName For Binary As #file
+	
+	Get #file,,itemCount
+	
+	ReDim this.item(itemCount) As inventoryItem
+	
+	For i As Integer = 0 to itemCount
+		Get #file,,item(i)
+	Next
+	
+	Close #file
 End Sub
 

@@ -442,6 +442,15 @@ Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr 
 			
 			Return -1
 			
+		Case "Use"
+			Dim As String triggerLabel
+			
+			triggerLabel = inv.useItem(arg(2))
+			
+			thisScript->seekTo(":" & triggerLabel, true)
+			
+			Return -1
+			
 		Case "Save"
 			inv.saveInventory(arg(2))
 			
@@ -449,6 +458,14 @@ Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr 
 			
 		Case "Load"
 			inv.loadInventory(arg(2))
+			
+			Return -1
+			
+		Case "Show"
+			' Stub
+			' Show the player their inventory and let them choose items etc.
+			
+			Return -1
 		
 		End Select
 		

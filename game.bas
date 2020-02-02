@@ -55,6 +55,7 @@ Endif
 '' Add routines from various modules
 gameScript.addOperator(@textAndMenuCallback)
 gameScript.addOperator(@gameCallback)
+gameScript.addOperator(@inventoryManagerCallback)
 
 '' Load and execute the main script
 gameScript.load(main)

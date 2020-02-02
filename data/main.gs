@@ -4,6 +4,12 @@ Player SimpleCollision
 
 TextSpeed 20
 
+Inventory Add UseMedkit "First Aid Kit" 10
+Inventory Add UseBullet "Bullets" 100
+Inventory Add UsePistol "Pistol" 1 true
+
+Inventory Save "data/inventory.sav"
+
 // Dummy attack routine
 //ActionTrigger Attack
 
