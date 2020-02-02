@@ -434,10 +434,20 @@ Do
 		EditLayer -= 1	
 		
 	ElseIf userHotKey(_HK_SET_FG) Then
-		map.tiles(EditX,EditY).tID(EditLayer) = EditTile1ID
+		For sx As Integer = 0 to SelectionSize-1
+			For sy As Integer = 0 to SelectionSize-1
+				map.tiles(EditX+sx, EditY+sy).tID(EditLayer) = EditTile1ID + sx + (sy*__TILESET_WIDTH)
+			Next
+		Next
+				
 		map.refresh()
 	ElseIf userHotKey(_HK_SET_BG) Then
-		map.tiles(EditX,EditY).tID(EditLayer) = EditTile2ID
+		For sx As Integer = 0 to SelectionSize-1
+			For sy As Integer = 0 to SelectionSize-1
+				map.tiles(EditX+sx, EditY+sy).tID(EditLayer) = EditTile2ID + sx + (sy*__TILESET_WIDTH)
+			Next
+		Next
+		
 		map.refresh()
 		
 	'' Resize the selection
@@ -637,7 +647,11 @@ Do
 		map.tiles(EditX, EditY).solid = 0
 		
 		For i As Integer = 0 to 3
-			map.tiles(EditX, EditY).flag(i) = 0
+			For sx As Integer = 0 to SelectionSize-1
+				For sy As Integer = 0 to SelectionSize-1
+					map.tiles(EditX+sx, EditY+sy).flag(i) = 0
+				Next
+			Next
 		Next
 		
 		map.refresh(showDebug)
@@ -724,10 +738,20 @@ Do
 			Elseif Multikey(fb.SC_LSHIFT) Then
 				'' Enable debug and reset the selection size so we can see what we are doing
 				showDebug = true
-				SelectionSize = 1
 				
 				'' Set the solid flag appropriately
-				map.tiles(EditX, EditY).solid = IIF( mouseButtons and 1, true, false )
+				If Multikey(fb.SC_X) Then
+					map.tiles(EditX, EditY).solid = IIF( mouseButtons and 1, true, false )
+					SelectionSize = 1
+				Else
+					For sx As Integer = 0 to SelectionSize-1
+						For sy As Integer = 0 to SelectionSize-1
+							map.tiles(EditX+sx, EditY+sy).solid = IIF( mouseButtons and 1, true, false )
+						Next
+					Next
+				Endif
+				
+				
 				map.refresh(showDebug)
 				changesSaved = false
 			Endif
