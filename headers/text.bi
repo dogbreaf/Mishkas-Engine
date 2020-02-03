@@ -174,11 +174,11 @@ Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
 	Dim As Integer	posX = (__XRES/2)-(boxWidth/2) 
 	Dim As Integer	posY = __YRES - (boxHeight + IIF(__XRES < 512, 16, 64))
 	
-	menuBox( posX, posY, boxWidth, boxHeight )
-	drawText( text, posX + 16, posY + 16, (boxWidth/8)-4, textSpeed )
-	
 	thisScreen = imageCreate( __XRES, __YRES )
 	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
+	
+	menuBox( posX, posY, boxWidth, boxHeight )
+	drawText( text, posX + 16, posY + 16, (boxWidth/8)-4, textSpeed )
 	
 	If confirmBtn Then
 		waitNext( posX + boxWidth - 24, posY + boxHeight - 20 )
