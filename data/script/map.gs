@@ -45,8 +45,8 @@ Trigger 21 24 LoadPharmacy
 Trigger 22 24 LoadPharmacy
 
 // Shop (Should be LoadShop)
-Trigger 50 9 Main
-Trigger 51 9 Main
+Trigger 50 9 LoadShop
+Trigger 51 9 LoadShop
 
 // Flats
 Trigger 53 27 Map_Flats

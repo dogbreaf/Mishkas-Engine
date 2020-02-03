@@ -45,6 +45,8 @@ If %LOOTED.PharmacyCashRegister% != true
 	Set LOOTED.PharmacyCashRegister = true
 	
 	Inventory Add UseOldMoney "Old Money" 10 "Old money, its not worth anything now..."
+	
+	Goto Main
 Endif
 If %LOOTED.PharmacyCashRegister% = true
 	Dialouge "It was empty..."

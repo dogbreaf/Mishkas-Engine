@@ -62,4 +62,5 @@ Include "data/script/items.gs"
 // All the stuff for different areas
 Include "data/script/map.gs"
 Include "data/script/pharmacy.gs"
+Include "data/script/shop.gs"
 

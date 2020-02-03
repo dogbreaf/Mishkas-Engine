@@ -22,6 +22,11 @@ Goto ReturnToLabel
 Dialouge "This shit is worthless..."
 Goto ReturnToLabel
 
+:UseChocolate
+Inventory Rem "Chocolate" 1
+Dialouge "The chocolate is old and has bloom, but it still tastes good."
+Goto ReturnToLabel
+
 :ReturnToLabel
 If %ReturnLabel% = ""
 	Goto Main
