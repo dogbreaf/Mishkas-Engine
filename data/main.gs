@@ -1,3 +1,6 @@
+// For debugging
+Dump "main.dump.gs"
+
 // Load the player graphcis
 Player Sprite "data/sprite/player.bmp" 192 24 3
 Player SimpleCollision
@@ -9,16 +12,11 @@ Inventory Add UseMedkit "First Aid Kit" 10 "A first aid kit."
 Inventory Add UseBullet "Bullets" 100 "Bullets for a pistol."
 Inventory Add UsePistol "Pistol" 1 "A small pistol." true
 
-For i 0 100
-	Random Q 10 100
-	Inventory Add UseMisc "Misc Item %i%" %Q% "A misculaneous item labelled %i%"
-Next
-
 // Dummy attack routine
 //ActionTrigger Attack
 
 // Load the main area
-Goto LoadTemplate
+Goto LoadMap
 
 // Start the game
 :Main
@@ -29,8 +27,8 @@ Option Add MMInv "Inventory"
 Option Add MMSave "Save"
 Option Add MMLoad "Load"
 Option Add MMQuit "Quit"
-Option Add MMLighting "Edit Lighting"
-Option Add DumpCode "Dump code file"
+//Option Add MMLighting "Edit Lighting"
+//Option Add DumpCode "Dump code file"
 Option Add Main "Cancel"
 
 Option Select
@@ -40,7 +38,9 @@ Goto Main
 Quit
 
 :MMInv
+Set ReturnLabel = MMInv
 Inventory Show
+Set ReturnLabel = ""
 Goto Main
 
 :MMSave
@@ -59,6 +59,9 @@ If %__PlayerX% > 0
 	Player Position %_PlayerX% %_PlayerY%
 
 	Dialouge "Loaded saved data. (%_PlayerX% %_PlayerY%)"
+	
+	Set LoadGame = true
+	Goto %PreviousLocation%
 Endif
 Goto Main
 
@@ -95,6 +98,8 @@ Goto Main
 Dialouge "You have no weapon."
 Goto Main
 
+// Utility scripts
+Include "data/script/items.gs"
 // All the stuff for different areas
 Include "data/script/map.gs"
 
