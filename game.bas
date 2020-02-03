@@ -7,6 +7,11 @@
 #define __XRES 800
 #define __YRES 600
 
+#define __DEBUGGING__
+
+'' Send messages to stderr for debugging
+#include "headers/debug.bi"
+
 ' Image Loading Abstractions and other drawing related functions
 #include "headers/images.bi"
 

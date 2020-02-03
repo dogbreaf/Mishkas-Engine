@@ -67,7 +67,10 @@ Sub inventoryManager.addItem( ByVal itemName As String, _
 	Dim As Integer count = UBound( this.item ) + 1
 	Dim As Integer ID = this.getItemID( itemName )
 	
+	debugPrint("Add new item " & itemName & " to inventory...")
+	
 	If ID = -1 Then
+		debugPrint(" -> Item does not exist in inventory, adding a new one.")
 		ReDim Preserve this.item( count ) As inventoryItem
 		
 		this.item(count).name = itemName
@@ -77,13 +80,17 @@ Sub inventoryManager.addItem( ByVal itemName As String, _
 		this.item(count).description = description
 	ElseIf this.item(ID).key Then
 		' The user already has this key item
+		debugPrint(" -> User already has one and it is a key item, not adding another...")
 	Else
+		debugPrint(" -> Item has ID " & ID & ", so incrimenting amount...")
 		this.item(ID).count += quantity
 	Endif
 End Sub
 
 Sub inventoryManager.remItem( ByVal itemName As String, ByVal quantity As Integer = 1 )
 	Dim As Integer ID = getItemId(itemName)
+	
+	debugPrint("Remove " & quantity & " of " & itemName & "(" & ID & ") from inventory...")
 	
 	If ID > -1 Then
 		' decriment the item quantity
@@ -103,6 +110,8 @@ Sub inventoryManager.deleteItem( ByVal ID As Integer )
 	
 	Dim As inventoryItem temp(count)
 	
+	debugPrint("Delete item " & ID & " from inventory...")
+	
 	For i As Integer = 0 to count
 		temp(i) = this.item(i)
 	Next
@@ -115,6 +124,8 @@ Sub inventoryManager.deleteItem( ByVal ID As Integer )
 			newID += 1
 		Endif
 	Next 
+	
+	debugPrint(" -> 1 item deleted from " & count & " items, leaving " & newID & " items.")
 End Sub
 
 Function inventoryManager.hasItem( ByVal itemName As String ) As Boolean
@@ -199,6 +210,12 @@ Function inventoryManager.InventoryScreen() As String
 	'' Selector for when the user selects an item
 	Dim As userChooser	selectionMenu
 	
+	'' What if the player has nothing
+	If listLength <= 0 Then
+		dialouge("Your inventory is empty...")
+		Return ""
+	Endif
+	
 	'' Main loop
 	Do
 		ScreenLock		
@@ -262,6 +279,7 @@ Function inventoryManager.InventoryScreen() As String
 			Select Case selectionMenu.chooseOption("What do you want to do?")
 			
 			Case "UseItem"
+				debugPrint("Use item " & selected & ", jumping to " & this.item(selected).trigger)
 				Return this.item(selected).trigger
 			
 			Case "DropItem"
@@ -274,7 +292,12 @@ Function inventoryManager.InventoryScreen() As String
 				If confirm("DROP", _
 					"Are you sure you want to drop " & numberToDrop & "x " & this.item(selected).name & "(s)?") = "DROP" Then
 				
+					debugPrint("User wants to drop " & numberToDrop & " of " & selected)
 					this.remItem(this.item(selected).name, numberToDrop)
+					debugPrint(" -> Done")
+					
+					'' Update list size
+					listLength = UBound(this.item)
 				Endif
 				Endif
 			End Select

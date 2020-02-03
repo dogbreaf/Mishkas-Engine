@@ -5,7 +5,7 @@ Player SimpleCollision
 TextSpeed 20
 
 // test the inventory function
-Inventory Add UseMedkit "First Aid Kit" 10 "A first aid kit."
+Inventory Add UseMedkit "MedKit" 10 "A first aid kit."
 Inventory Add UseBullet "Bullets" 100 "Bullets for a pistol."
 Inventory Add UsePistol "Pistol" 1 "A small pistol." true
 

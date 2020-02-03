@@ -44,7 +44,7 @@ If %LOOTED.PharmacyCashRegister% != true
 	Dialouge "You found some old money\c19"
 	Set LOOTED.PharmacyCashRegister = true
 	
-	Inventory Add UseOldMoney "Old Money" 10 "Old money, its not worth anything now..."
+	Inventory Add UseOldMoney "Money" 10 "Old money, its not worth anything now..."
 	
 	Goto Main
 Endif

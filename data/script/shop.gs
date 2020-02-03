@@ -38,7 +38,7 @@ If %LOOTED.ShopCashRegister% != true
 	Set LOOTED.ShopCashRegister = true
 	Random LootAmount 1 15
 	
-	Inventory Add UseOldMoney "Old Money" %LootAmount% "Old money, its not worth anything now..."
+	Inventory Add UseOldMoney "Money" %LootAmount% "Old money, its not worth anything now..."
 	
 	Goto Main
 Endif
