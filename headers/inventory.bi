@@ -30,6 +30,8 @@ Type inventoryManager
 	Declare Sub addItem( ByVal As String, ByVal As Integer = 1, ByVal As String = "", ByVal As String = "", ByVal As Boolean = false )
 	Declare Sub remItem( ByVal As String, ByVal As Integer = 1 )
 	
+	Declare Sub deleteItem( ByVal As Integer )
+	
 	' Check if the player has a certain item
 	Declare Function hasItem( ByVal As String ) As Boolean
 	
@@ -87,14 +89,32 @@ Sub inventoryManager.remItem( ByVal itemName As String, ByVal quantity As Intege
 		' decriment the item quantity
 		this.item(ID).count -= quantity
 		
-		If this.item(ID).count < 0 Then
+		If this.item(ID).count <= 0 Then
 			' The user has none left
-			' but currently I don't know of an easy way to delete an array index so instead
-			' we will ignore items with a quantity less than 1 when displaying menus and saving/loading
-			' the inventory
-			this.item(ID).count = 0
+			deleteItem(ID)
 		Endif
 	Endif
+End Sub
+
+Sub inventoryManager.deleteItem( ByVal ID As Integer )
+	'' Permanantly delete an item
+	Dim As Integer count = UBound(item)
+	Dim As Integer newID
+	
+	Dim As inventoryItem temp(count)
+	
+	For i As Integer = 0 to count
+		temp(i) = this.item(i)
+	Next
+	
+	ReDim this.item(count-1) As inventoryItem
+	
+	For i As Integer = 0 to count
+		If i <> ID Then
+			this.item(newID) = temp(i)
+			newID += 1
+		Endif
+	Next 
 End Sub
 
 Function inventoryManager.hasItem( ByVal itemName As String ) As Boolean
