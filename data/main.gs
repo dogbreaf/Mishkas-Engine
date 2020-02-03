@@ -4,9 +4,20 @@ Player SimpleCollision
 
 TextSpeed 20
 
+:Start
+Splash "data/mainmenu.bmp"
+Option Add MMLoad "Continue"
+Option Add NewGame "New Game"
+Option Add EndOfGame "Quit"
+Option Select
+
+Quit
+
+:NewGame
+
 // test the inventory function
 Inventory Add UseMedkit "MedKit" 10 "A first aid kit."
-Inventory Add UseBullet "Bullets" 100 "Bullets for a pistol."
+Inventory Add UseBullet "Bullets" 20 "Bullets for a pistol."
 Inventory Add UsePistol "Pistol" 1 "A small pistol." true
 
 // Load the main area
@@ -36,9 +47,11 @@ Set ReturnLabel = ""
 Goto Main
 
 :MMSave
+Set saved = true
 Dialouge "Saving..." false
 SaveStack "data/game.sav"
 Inventory Save "data/inventory.sav"
+Set saved = false
 Sleep 1000
 Dialouge "Saved."
 Goto Main
@@ -47,7 +60,7 @@ Goto Main
 // Load the Save
 LoadStack "data/game.sav"
 Inventory Load "data/inventory.sav"
-If %__PlayerX% > 0
+If %saved% = true
 	Player Position %_PlayerX% %_PlayerY%
 
 	Dialouge "Loaded saved data. (%_PlayerX% %_PlayerY% in %PreviousLocation%)"
@@ -55,7 +68,8 @@ If %__PlayerX% > 0
 	Set LoadGame = true
 	Goto %PreviousLocation%
 Endif
-Goto Main
+Dialouge "Save data was not found or was corrupt."
+Goto Start
 
 // Utility scripts
 Include "data/script/items.gs"
