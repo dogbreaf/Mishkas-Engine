@@ -166,6 +166,8 @@ End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
+	Dim As fb.Image Ptr thisScreen
+	
 	Dim As Integer	boxWidth = IIF(__XRES < 512, __XRES-32, 512)
 	Dim As Integer	boxHeight = 128
 	
@@ -175,12 +177,21 @@ Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
 	menuBox( posX, posY, boxWidth, boxHeight )
 	drawText( text, posX + 16, posY + 16, (boxWidth/8)-4, textSpeed )
 	
+	thisScreen = imageCreate( __XRES, __YRES )
+	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
+	
 	If confirmBtn Then
 		waitNext( posX + boxWidth - 24, posY + boxHeight - 20 )
 		
 		menuBox( posX, posY, boxWidth, boxHeight )
 		Sleep 100,1
+		
+		'' Restore the screen when the user confirms
+		'' If the user doesnt need to confirm then the dialouge is supposed to hang around
+		Put (0,0), thisScreen, PSET
 	Endif
+	
+	ImageDestroy(thisScreen)
 End Sub
 
 '' Large full screen box of text
