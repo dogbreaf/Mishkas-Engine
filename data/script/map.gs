@@ -33,7 +33,6 @@ Trigger 38 14 Map_Sign
 Trigger 39 14 Map_Sign
 Trigger 38 15 Map_Sign
 Trigger 39 15 Map_Sign
-Goto Main
 
 // Fallout shelter
 Trigger 47 44 Map_FalloutShelter
@@ -54,6 +53,8 @@ Trigger 54 27 Map_Flats
 //
 Trigger 28 24 Map_Mark
 Trigger 29 24 Map_Mark
+
+Goto Main
 
 // Trigger code segments
 :Map_Sign
