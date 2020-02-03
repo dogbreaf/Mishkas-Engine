@@ -400,6 +400,8 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 	'''''''''''''''''''
 	Case "Background"
 		LoadImageFile(arg(1), Screenptr)
+		
+		Return -1
 	
 	Case Else
 		Return 0
