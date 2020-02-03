@@ -239,6 +239,57 @@ Function confirm( ByVal gotoLabel As String, ByVal message As String = "" ) As S
 	Return ret
 End Function
 
+Function getNumberAmount( ByVal minimum As Integer, ByVal maximum As Integer ) As Integer
+	'' Pick a number amount
+	Dim As Integer ret
+	
+	Dim As fb.Image Ptr	thisScreen
+	
+	Dim As Integer		boxWidth = 60
+	Dim As Integer		boxHeight = 45
+	
+	'' Should be positioned correctly for the dialouge box
+	Dim As Integer		posX = (__XRES/2) + (IIF(__XRES < 512, (__XRES-32)/2, 256)-boxWidth) 
+	Dim As Integer		posY = (__YRES-IIF(__XRES < 512, 128, 192)) - (boxHeight+20)
+	
+	thisScreen = imageCreate( __XRES, __YRES )
+	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
+	
+	Do
+		ScreenLock
+		menuBox( posX, posY, boxWidth, boxHeight )
+		Draw String (posX + (boxWidth/2) - 4, posY+8), chr(30), rgb(0,0,0)
+		Draw String (posX + (boxWidth/2) - 4, posY+boxHeight-12), chr(31), rgb(0,0,0)
+		
+		Draw String (posX + (boxWidth/2) - (len(str(ret))*4), posY + (boxHeight/2)-4), str(ret), rgb(0,0,0)
+		ScreenUnLock
+		
+		If getUserKey(kbd_Up, false, 150) Then
+			ret += 1
+		ElseIf getUserKey(kbd_Down, false, 150) Then
+			ret -= 1
+		ElseIf getUserKey(kbd_Action, true) Then
+			Exit Do
+		ElseIf getUserKey(kbd_Quit, true) Then
+			ret = 0
+			Exit Do
+		Endif
+		
+		If ret < minimum Then
+			ret = maximum
+		ElseIf ret > maximum Then
+			ret = minimum
+		Endif
+		
+		Sleep regulateFPS(60),1
+	Loop
+	
+	Put (0,0), thisScreen, PSET
+	ImageDestroy(thisScreen)
+	
+	Return ret
+End Function
+
 Type userChooser
 	options(Any)	As _option
 	

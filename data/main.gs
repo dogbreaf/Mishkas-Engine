@@ -4,11 +4,15 @@ Player SimpleCollision
 
 TextSpeed 20
 
-Inventory Add UseMedkit "First Aid Kit" 10
-Inventory Add UseBullet "Bullets" 100
-Inventory Add UsePistol "Pistol" 1 true
+// test the inventory function
+Inventory Add UseMedkit "First Aid Kit" 10 "A first aid kit."
+Inventory Add UseBullet "Bullets" 100 "Bullets for a pistol."
+Inventory Add UsePistol "Pistol" 1 "A small pistol." true
 
-Inventory Save "data/inventory.sav"
+For i 0 100
+	Random Q 10 100
+	Inventory Add UseMisc "Misc Item %i%" %Q% "A misculaneous item labelled %i%"
+Next
 
 // Dummy attack routine
 //ActionTrigger Attack
@@ -21,7 +25,7 @@ Goto LoadTemplate
 RunGame
 
 :MainMenu
-Option Add MMNI "Inventory"
+Option Add MMInv "Inventory"
 Option Add MMSave "Save"
 Option Add MMLoad "Load"
 Option Add MMQuit "Quit"
@@ -35,24 +39,26 @@ Goto Main
 :MMQuit
 Quit
 
-:MMNI
-Dialouge "Not implimented yet."
+:MMInv
+Inventory Show
 Goto Main
 
 :MMSave
 Dialouge "Saving..." false
-SaveStack "data/save.txt"
+SaveStack "data/game.sav"
+Inventory Save "data/inventory.sav"
 Sleep 1000
 Dialouge "Saved."
 Goto Main
 
 :MMLoad
 // Load the Save
-LoadStack "data/save.gss"
+LoadStack "data/game.sav"
+Inventory Load "data/inventory.sav"
 If %__PlayerX% > 0
-  Player Position %_PlayerX% %_PlayerY%
+	Player Position %_PlayerX% %_PlayerY%
 
-  Dialouge "Loaded saved data. (%_PlayerX% %_PlayerY%)"
+	Dialouge "Loaded saved data. (%_PlayerX% %_PlayerY%)"
 Endif
 Goto Main
 

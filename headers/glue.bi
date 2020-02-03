@@ -2,18 +2,6 @@
 '' This file is supposed to be all of the messy glue logic
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-'' Unashamedly stolen from the forum 
-Function RegulateFPS(Byval MyFps As Long,Byref fps As Long=0) As Long
-	Static As Double timervalue,_lastsleeptime,t3,frames
-	frames+=1
-	If (Timer-t3)>=1 Then t3=Timer:fps=frames:frames=0
-	Var sleeptime=_lastsleeptime+((1/myfps)-Timer+timervalue)*1000
-	If sleeptime<1 Then sleeptime=1
-	_lastsleeptime=sleeptime
-	timervalue=Timer
-	Return sleeptime
-End Function
-
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Overworld related procedures
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -431,9 +419,10 @@ Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr 
 			Dim As String itemTrigger	= arg(2)
 			Dim As String itemName		= arg(3)
 			Dim As Integer quantity		= val(arg(4))
-			Dim As Boolean keyItem		= IIF(arg(5) = "true", true, false)
+			Dim As String description	= arg(5)
+			Dim As Boolean keyItem		= IIF(arg(6) = "true", true, false)
 			
-			inv.addItem(itemName, quantity, itemTrigger, keyItem)
+			inv.addItem(itemName, quantity, itemTrigger, description, keyItem)
 			
 			Return -1
 			
@@ -447,7 +436,9 @@ Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr 
 			
 			triggerLabel = inv.useItem(arg(2))
 			
-			thisScript->seekTo(":" & triggerLabel, true)
+			If triggerLabel <> "" Then
+				thisScript->seekTo(":" & triggerLabel, true)
+			Endif
 			
 			Return -1
 			
@@ -462,8 +453,14 @@ Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr 
 			Return -1
 			
 		Case "Show"
-			' Stub
 			' Show the player their inventory and let them choose items etc.
+			Dim As String triggerLabel
+			
+			triggerLabel = inv.InventoryScreen()
+			
+			If triggerLabel <> "" Then
+				thisScript->seekTo(":" & triggerLabel, true)
+			Endif
 			
 			Return -1
 		

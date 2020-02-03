@@ -7,7 +7,7 @@
 #define __XRES 800
 #define __YRES 600
 
-' Image Loading Abstractions
+' Image Loading Abstractions and other drawing related functions
 #include "headers/images.bi"
 
 ' Core graphics routines
