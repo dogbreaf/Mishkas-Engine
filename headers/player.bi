@@ -43,16 +43,6 @@ Sub player.input( ByRef room As Screen )
 	Endif
 
 	' Check for movement using the WASD keys
-	if getUserKey(kbd_Left, false, 0) then
-		this.animate = walk_normal_anim
-		this.flip_x = 1
-		this.move(-walk_speed, 0, room)
-	endif
-	if getUserKey(kbd_Right, false, 0) then
-		this.animate = walk_normal_anim
-		this.flip_x = 0
-		this.move(walk_speed, 0, room)
-	endif
 	if getUserKey(kbd_Up, false, 0) then
 		this.animate = walk_up_anim
 		this.flip_x = 0
@@ -62,6 +52,16 @@ Sub player.input( ByRef room As Screen )
 		this.animate = walk_dn_anim
 		this.flip_x = 0
 		this.move(0, walk_speed, room)
+	endif
+	if getUserKey(kbd_Left, false, 0) then
+		this.animate = walk_normal_anim
+		this.flip_x = 1
+		this.move(-walk_speed, 0, room)
+	endif
+	if getUserKey(kbd_Right, false, 0) then
+		this.animate = walk_normal_anim
+		this.flip_x = 0
+		this.move(walk_speed, 0, room)
 	endif
 End Sub
 
