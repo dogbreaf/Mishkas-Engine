@@ -1,5 +1,7 @@
 Goto End_MainMap
 :LoadMap
+Transition FADE
+
 LoadTileSet "data/tileset/tileset.bmp"
 LoadTileMap "data/map/map.dat"
 
@@ -39,8 +41,8 @@ Trigger 47 44 Map_FalloutShelter
 Trigger 48 44 Map_FalloutShelter
 
 // Pharmacy (Should be LoadParmacy, but it doesnt exist yet)
-Trigger 21 24 Main
-Trigger 22 24 Main
+Trigger 21 24 LoadPharmacy
+Trigger 22 24 LoadPharmacy
 
 // Shop (Should be LoadShop)
 Trigger 50 9 Main
@@ -76,6 +78,8 @@ Goto Main
 
 :Map_FalloutShelter
 Dialouge "The fallout shelter is locked."
+Set _PlayerY += 1
+Player Position %_PlayerX% %_PlayerY%
 Goto Main
 
 :Map_Mark
@@ -89,6 +93,8 @@ Goto Main
 
 :Map_Flats
 Dialouge "The door is blocked, there must be something behind it..."
+Set _PlayerY += 1
+Player Position %_PlayerX% %_PlayerY%
 Goto Main
 
 // End of Auto-generated template

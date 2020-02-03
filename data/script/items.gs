@@ -13,6 +13,15 @@ Goto ReturnToLabel
 Dialouge "There is a time and a place for everything..."
 Goto ReturnToLabel
 
+:UsePainkiller
+Inventory Rem "Painkiller" 1
+Dialouge "You dry swallow the pills, they are aweful and you aren't\nsure they did anything."
+Goto ReturnToLabel
+
+:UseOldMoney
+Dialouge "This shit is worthless..."
+Goto ReturnToLabel
+
 :ReturnToLabel
 If %ReturnLabel% = ""
 	Goto Main
