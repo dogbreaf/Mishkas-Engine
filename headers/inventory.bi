@@ -1,6 +1,7 @@
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '' Manage the player's inventory
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#include "file.bi"
 
 Type inventoryItem
 	name 		As String*32	' The display name of the item
@@ -172,17 +173,19 @@ Sub inventoryManager.loadInventory( ByVal fileName As String )
 	Dim As Integer file = FreeFile
 	Dim As Integer itemCount
 	
-	Open fileName For Binary As #file
-	
-	Get #file,,itemCount
-	
-	ReDim this.item(itemCount) As inventoryItem
-	
-	For i As Integer = 0 to itemCount
-		Get #file,,item(i)
-	Next
-	
-	Close #file
+	If FileExists(fileName) Then
+		Open fileName For Binary As #file
+		
+		Get #file,,itemCount
+		
+		ReDim this.item(itemCount) As inventoryItem
+		
+		For i As Integer = 0 to itemCount
+			Get #file,,item(i)
+		Next
+		
+		Close #file
+	Endif
 End Sub
 
 Function inventoryManager.InventoryScreen() As String
