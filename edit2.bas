@@ -119,8 +119,6 @@ Declare Sub SelectBox( ByVal As Integer, ByVal As Integer, ByVal As Integer, ByV
 
 Declare Function userHotkey( ByVal As Integer, ByVal As Integer = -1, ByVal As Boolean = true ) As Boolean
 
-Declare Function RegulateFPS(Byval As Long,Byref As Long=0) As Long
-
 '' Tile window ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Dim As uiWindow		win_tileProperties
 
@@ -918,16 +916,3 @@ Function userHotkey( ByVal key As Integer, ByVal modifier As Integer = -1, ByVal
 	'' Return true/false
 	Return ret
 End Function
-
-'' Unashamedly stolen from the forum 
-Function RegulateFPS(Byval MyFps As Long,Byref fps As Long=0) As Long
-	Static As Double timervalue,_lastsleeptime,t3,frames
-	frames+=1
-	If (Timer-t3)>=1 Then t3=Timer:fps=frames:frames=0
-	Var sleeptime=_lastsleeptime+((1/myfps)-Timer+timervalue)*1000
-	If sleeptime<1 Then sleeptime=1
-	_lastsleeptime=sleeptime
-	timervalue=Timer
-	Return sleeptime
-End Function
-
