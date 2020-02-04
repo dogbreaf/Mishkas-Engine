@@ -1,7 +1,10 @@
 #include once "fbgfx.bi"
 
 Type player extends sprite
-	walk_speed	As Integer = 4
+	walk_speed	As Integer = 1
+	walk_delay	As Integer = 20
+	
+	walk_timer	As Double
 	
 	next_x		As Integer
 	next_y		As Integer
@@ -32,6 +35,9 @@ Sub player.input( ByRef room As Screen )
 	' default to no animation
 	this.animate = 0
 	
+	' X and Y velocity 
+	Dim As Integer xv, yv
+	
 	' Which animations do we use for which direction of travel
 	Dim As Integer walk_normal_anim = 1
 	Dim As Integer walk_up_anim = 1
@@ -46,23 +52,25 @@ Sub player.input( ByRef room As Screen )
 	if getUserKey(kbd_Up, false, 0) then
 		this.animate = walk_up_anim
 		this.flip_x = 0
-		this.move(0, -walk_speed, room)
+		yv += -walk_speed
 	endif
 	if getUserKey(kbd_Down, false, 0) then
 		this.animate = walk_dn_anim
 		this.flip_x = 0
-		this.move(0, walk_speed, room)
+		yv += walk_speed
 	endif
 	if getUserKey(kbd_Left, false, 0) then
 		this.animate = walk_normal_anim
 		this.flip_x = 1
-		this.move(-walk_speed, 0, room)
+		xv += -walk_speed
 	endif
 	if getUserKey(kbd_Right, false, 0) then
 		this.animate = walk_normal_anim
 		this.flip_x = 0
-		this.move(walk_speed, 0, room)
+		xv += walk_speed
 	endif
+	
+	this.move(xv, yv, room)
 End Sub
 
 Sub player.move( ByVal xv As Integer, ByVal yv As Integer, ByRef room As Screen ) 
@@ -98,11 +106,12 @@ Sub player.move( ByVal xv As Integer, ByVal yv As Integer, ByRef room As Screen 
 	Endif
 	
 	'' Two seperate IF statements to suppress warning about mixed boolean operators
-	If this.__int_framerefresh Then
+	If (timer-this.walk_timer)*1000 > this.walk_delay Then
 		If not collision then
 			this.posx += xv
 			this.posy += yv
 		Endif
-	Endif	
+	Endif
+	this.walk_timer = timer
 End Sub
 
