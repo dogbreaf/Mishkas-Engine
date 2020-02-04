@@ -76,6 +76,8 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 		Return -1
 		
 	Case "Trigger"
+		debugPrint("Set trigger " & arg(1) & "," & arg(2) & " to " & arg(3))
+		
 		Dim As Integer	tgrX, tgrY
 		
 		tgrX = val( arg(1) )
@@ -144,11 +146,14 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 		Select Case arg(1)
 		
 		Case "Set"
+			debugPrint("Set room light to file " & arg(2))
+			
 			gameRoom.deleteLight()
 			gameRoom.setLighting( arg(2), val(arg(3)), val(arg(4)) )
 			Return -1
 			
 		Case "Radius"
+			debugPrint("Set room light size to " & arg(2))
 			'' Set vars
 			Dim As Integer radius = val(arg(2))
 			
@@ -166,6 +171,8 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 			Return -1
 		
 		Case "Delete"
+			debugPrint("Remove room light")
+			
 			gameRoom.deleteLight()
 			Return -1
 		
@@ -182,6 +189,8 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 		
 		Case "Clear"
 			ReDim gameRoom.objects(-1) As gameObject
+			
+			debugPrint("Explicit clear room objects...")
 		
 		Case "Add"
 			Dim As String varName = arg(2)
@@ -192,10 +201,14 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 			
 			Dim As Integer objectID
 			
+			debugPrint("Add new object...")
+			
 			objectID = gameRoom.addObject( imageName, w, h, a )
 			
 			' Set the variable to have the sprite's ID
 			thisScript->stack.setVar(varName, objectID)
+			
+			debugPrint(" -> Variable " & varName & " now contains ObjectID " & objectID)
 			
 		Case "Set"
 			Dim As Integer ObjectID = Val(arg(2))
@@ -204,6 +217,8 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 			Dim As Integer h = val( arg(5) )
 			Dim As Integer a = val( arg(6) )
 			
+			debugPrint("Update object " & arg(2))
+			
 			If ObjectID > UBound( gameRoom.objects) Then:thisScript->sendError("Invalid ObjectID."):Endif
 			
 			gameRoom.setObject( ObjectID, imageName, w, h, a )
@@ -211,11 +226,15 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 		Case "Trigger_playerAction"
 			Dim As Integer ObjectID = Val(arg(2))
 			
+			debugPrint("Update object " & arg(2) & " with playerAction trigger " & arg(3))
+			
 			If ObjectID > UBound( gameRoom.objects) Then:thisScript->sendError("Invalid ObjectID."):Endif
 			gameRoom.objects(ObjectID).playerActionTrigger = arg(3)
 			
 		Case "Trigger_playerTouch"
 			Dim As Integer ObjectID = Val(arg(2))
+			
+			debugPrint("Update object " & arg(2) & " with playerTouch trigger " & arg(3))
 			
 			If ObjectID > UBound( gameRoom.objects) Then:thisScript->sendError("Invalid ObjectID."):Endif
 			gameRoom.objects(ObjectID).playerTouchTrigger = arg(3)
@@ -223,17 +242,23 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 		Case "Trigger_MovementEnd"
 			Dim As Integer ObjectID = Val(arg(2))
 			
+			debugPrint("Update object " & arg(2) & " with MovementEnd trigger " & arg(3))
+			
 			If ObjectID > UBound( gameRoom.objects) Then:thisScript->sendError("Invalid ObjectID."):Endif
 			gameRoom.objects(ObjectID).movementDoneTrigger = arg(3)
 			
 		Case "Pos"
 			Dim As Integer ObjectID = Val(arg(2))
 			
+			debugPrint("Set object " & arg(2) & " position to " & arg(3) & "," & arg(4))
+			
 			If ObjectID > UBound( gameRoom.objects) Then:thisScript->sendError("Invalid ObjectID."):Endif
 			gameRoom.objects(ObjectID).SetPos( val(arg(3)), val(arg(4)) )
 			
 		Case "MoveTo"
 			Dim As Integer ObjectID = Val(arg(2))
+			
+			debugPrint("Move object " & arg(2) & " to " & arg(3) & "," & arg(4))
 			
 			If ObjectID > UBound( gameRoom.objects) Then:thisScript->sendError("Invalid ObjectID."):Endif
 			gameRoom.objects(ObjectID).MoveTo( val(arg(3)), val(arg(4)) )
@@ -247,14 +272,18 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 		Case "Disable"
 			Dim As Integer ObjectID = Val(arg(2))
 			
+			debugPrint("Disable object " & arg(2))
+			
 			If ObjectID > UBound( gameRoom.objects) Then:thisScript->sendError("Invalid ObjectID."):Endif
 			gameRoom.objects(ObjectID).disabled = true
 			
 		Case "Enable"
 			Dim As Integer ObjectID = Val(arg(2))
 			
+			debugPrint("Enable object " & arg(2))
+			
 			If ObjectID > UBound( gameRoom.objects) Then:thisScript->sendError("Invalid ObjectID."):Endif
-			gameRoom.objects(ObjectID).disabled = true
+			gameRoom.objects(ObjectID).disabled = false
 			
 		Case "Animate"
 			Dim As Integer ObjectID = Val(arg(2))
@@ -287,6 +316,8 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 			Dim As String trigger = gameRoom.getTrigger()
 			
 			If trigger <> "" Then
+				debugPrint("Trigger " & trigger & " activated...")
+				
 				thisScript->seekTo(":" & trigger, true)
 				Exit Do
 			Endif
