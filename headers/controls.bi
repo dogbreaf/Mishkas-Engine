@@ -1,3 +1,4 @@
+'' Possible keyboard inputs
 enum inputAction
 	kbd_Up
 	kbd_Down
@@ -10,6 +11,15 @@ enum inputAction
 	kbd_Close
 end enum
 
+'' The key to display in prompts
+#define _KEY_UP "W"
+#define _KEY_DN "S"
+#define _KEY_LF "A"
+#define _KEY_RG "D"
+#define _KEY_ACTION "E"
+#define _KEY_QUIT "Esc"
+
+'' Check keyboard input
 Function getUserKey( ByVal action As inputAction, ByVal waitForKeyUp As Boolean = False, ByVal keyRepeat As Integer = 100 ) As Boolean
 	Dim As Integer	Key1
 	Dim As Integer	Key2
@@ -19,6 +29,7 @@ Function getUserKey( ByVal action As inputAction, ByVal waitForKeyUp As Boolean 
 	Select Case action
 	
 	'' Select the keys depending on the action
+	'' ~~ KEYBIND SETTINGS ~~
 	Case kbd_Up
 		Key1 = fb.SC_UP
 		Key2 = fb.SC_W
@@ -56,6 +67,8 @@ Function getUserKey( ByVal action As inputAction, ByVal waitForKeyUp As Boolean 
 		Endif
 	End Select
 	
+	'' ~~ END OF KEYBINDS ~~
+	
 	'' Check if the key is pressed
 	If Multikey(Key1) or IIF( Key2 = -1, 0, Multikey(Key2)) Then
 		ret = true
@@ -73,4 +86,21 @@ Function getUserKey( ByVal action As inputAction, ByVal waitForKeyUp As Boolean 
 	'' Return true/false
 	Return ret
 End Function
+
+'' Display a button prompt
+Sub drawButtonPrompt( ByVal prompt As String )
+	Dim As Integer posx, posy
+	
+	posx = __XRES - len(prompt)*8 - 60
+	posy = __YRES - 20
+	
+	'' Create a border/shadow to make the text more readable
+	Draw String (posx-1, posy-1), prompt, rgb(0,0,0)
+	Draw String (posx+1, posy-1), prompt, rgb(0,0,0)
+	Draw String (posx-1, posy+1), prompt, rgb(0,0,0)
+	Draw String (posx+1, posy+1), prompt, rgb(0,0,0)
+	
+	'' Draw the string
+	Draw String (posx, posy), prompt, rgb(255,255,255)
+End Sub
 

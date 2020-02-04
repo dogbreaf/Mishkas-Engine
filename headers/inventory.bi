@@ -262,6 +262,10 @@ Function inventoryManager.InventoryScreen() As String
 		menuBox(descX, descY, descW, descH)
 		drawText(this.item(selected).description, descX+16, descY+16, (descW-64)/8, 0)
 		
+		'' This is pruposefully the same as the uesrSelector one so that they can overlap when
+		'' an item is selected, otherwise it looks garbage.
+		drawButtonPrompt(_KEY_UP & "/" & _KEY_DN & " Select, " & _KEY_ACTION & " Confirm")
+		
 		ScreenUnLock
 		
 		'' Control scrolling

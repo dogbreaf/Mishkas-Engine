@@ -56,7 +56,7 @@ End Sub
 '' Wait for the user to press "E"
 Sub waitNext( ByVal posX As Integer = 0, ByVal posY As Integer = 0 )	
 	If posX and posY Then
-		Draw String ( posX - 64, posY ), "Press E " & Chr(31), rgb(0,0,0)
+		Draw String ( posX - 64, posY ), "Press " & _KEY_ACTION & " " & Chr(31), rgb(0,0,0)
 	Endif
 	
 	Do
@@ -139,6 +139,8 @@ Function SelectMenu( options(Any) As _option, ByVal x As Integer = -1, ByVal y A
 				Draw String ( posX + 10, (posY + 10) + ( i*10 ) ), options(i).text, rgb(0,0,0)
 			Endif
 		Next
+		
+		drawButtonPrompt(_KEY_UP & "/" & _KEY_DN & " Select, " & _KEY_ACTION & " Confirm")
 		ScreenUnLock
 	
 		If getUserKey(kbd_Up, false, 200) Then
@@ -165,7 +167,7 @@ Function SelectMenu( options(Any) As _option, ByVal x As Integer = -1, ByVal y A
 End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
+Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true, ByVal bigMode As Boolean = false )
 	Dim As fb.Image Ptr thisScreen
 	
 	Dim As Integer	boxWidth = IIF(__XRES < 512, __XRES-32, 512)
@@ -173,6 +175,14 @@ Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
 	
 	Dim As Integer	posX = (__XRES/2)-(boxWidth/2) 
 	Dim As Integer	posY = __YRES - (boxHeight + IIF(__XRES < 512, 16, 64))
+	
+	If bigMode Then
+		boxWidth = __XRES-64
+		boxHeight = __YRES - 256
+		
+		posX = (__XRES/2)-(boxWidth/2) 
+		posY = 32
+	Endif
 	
 	thisScreen = imageCreate( __XRES, __YRES )
 	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
@@ -192,25 +202,6 @@ Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
 	Endif
 	
 	ImageDestroy(thisScreen)
-End Sub
-
-'' Large full screen box of text
-Sub bigDialouge( ByVal text As String, ByVal confirmBtn As Boolean = true )
-	Dim As Integer	boxWidth = __XRES-64
-	Dim As Integer	boxHeight = __YRES - 256
-	
-	Dim As Integer	posX = (__XRES/2)-(boxWidth/2) 
-	Dim As Integer	posY = 32
-	
-	menuBox( posX, posY, boxWidth, boxHeight )
-	drawText( text, posX + 16, posY + 16, (boxWidth/8)-4, textSpeed )
-	
-	If confirmBtn Then
-		waitNext( posX + boxWidth - 24, posY + boxHeight - 20 )
-		
-		menuBox( posX, posY, boxWidth, boxHeight )
-		Sleep 100,1
-	Endif
 End Sub
 
 Function confirm( ByVal gotoLabel As String, ByVal message As String = "" ) As String
@@ -273,6 +264,8 @@ Function getNumberAmount( ByVal minimum As Integer, ByVal maximum As Integer ) A
 		Draw String (posX + (boxWidth/2) - 4, posY+boxHeight-12), chr(31), rgb(0,0,0)
 		
 		Draw String (posX + (boxWidth/2) - (len(str(ret))*4), posY + (boxHeight/2)-4), str(ret), rgb(0,0,0)
+		
+		drawButtonPrompt(_KEY_UP & "/" & _KEY_DN & " Select " & _KEY_ACTION & " Confirm")
 		ScreenUnLock
 		
 		If getUserKey(kbd_Up, false, 150) Then

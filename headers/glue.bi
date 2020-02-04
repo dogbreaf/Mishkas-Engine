@@ -362,7 +362,7 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 			Return -1
 			
 		Case "Show"
-			bigDialouge(textScreen, IIF( arg(2) = "false", false, true ))
+			dialouge(textScreen, IIF( arg(2) = "false", false, true ), true)
 			textScreen = ""
 			
 			Return -1

@@ -252,7 +252,13 @@ Sub room.Update()
 		'' Draw lighting overlay
 		drawLighting()
 		
+		'' Scale the graphics
 		scaleScreen()
+		
+		'' Draw a button prompt for interactive tiles
+		If (trigger(PlayerX, PlayerY) <> "") and map.tiles(PlayerX, PlayerY).flag(3) Then
+			drawButtonPrompt(_KEY_ACTION & " Interact")
+		Endif
 	ScreenUnLock
 	
 	'' Player inputs
