@@ -7,7 +7,9 @@ Type gameObject Extends Sprite
 	yPosition	As Integer
 	zPosition	As Integer = 2
 	
-	movespeed	As Integer = 4
+	movespeed	As Integer = 20
+	
+	moveTimer	As Double
 	
 	stoppedMoving	As Boolean
 	moving		As Boolean
@@ -35,6 +37,15 @@ Sub gameObject.updateMovement( ByVal viewportX As Integer = 0, ByVal viewportY A
 	wasMoving = moving
 	moving = false
 	
+	'' Movement speed control
+	Dim As Boolean	canMove
+	If (timer - moveTimer)*1000 > movespeed Then
+		canMove = true
+	Else
+		canMove = false
+	Endif
+	moveTimer = timer
+	
 	'' Decide on animation to use
 	Dim As Integer walk_normal_anim = 1
 	Dim As Integer walk_up_anim = 1
@@ -46,34 +57,28 @@ Sub gameObject.updateMovement( ByVal viewportX As Integer = 0, ByVal viewportY A
 	Endif
 	
 	'' Move to target position
-	If xPosition < target_posX Then
-		this.animate = walk_normal_anim
-		this.flip_x = 0
-		If this.__int_framerefresh Then
-			xPosition += movespeed
+	If canMove Then
+		If xPosition < target_posX Then
+			this.animate = walk_normal_anim
+			this.flip_x = 0
+			xPosition += 1
+			moving = true
+		Elseif xPosition > target_posX Then
+			this.animate = walk_normal_anim
+			this.flip_x = 1
+			xPosition -= 1
+			moving = true
 		Endif
-		moving = true
-	Elseif xPosition > target_posX Then
-		this.animate = walk_normal_anim
-		this.flip_x = 1
-		If this.__int_framerefresh Then
-			xPosition -= movespeed
+		
+		If yPosition < target_posY Then
+			this.animate = walk_dn_anim
+			yPosition += 1
+			moving = true
+		Elseif yPosition > target_posY Then
+			this.animate = walk_up_anim
+			yPosition -= 1
+			moving = true
 		Endif
-		moving = true
-	Endif
-	
-	If yPosition < target_posY Then
-		this.animate = walk_dn_anim
-		If this.__int_framerefresh Then
-			yPosition += movespeed
-		Endif
-		moving = true
-	Elseif yPosition > target_posY Then
-		this.animate = walk_up_anim
-		If this.__int_framerefresh Then
-			yPosition -= movespeed
-		Endif
-		moving = true
 	Endif
 	
 	If wasMoving and (not moving) Then
