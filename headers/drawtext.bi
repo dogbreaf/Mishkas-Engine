@@ -33,7 +33,7 @@ Sub drawString( ByVal x As Integer, ByVal y As Integer, _
 			font = 0
 		Endif
 		fontName = ""
-	ElseIf fontToLoad <> fontName Then
+	ElseIf (fontToLoad <> "") and (fontToLoad <> fontName) Then
 		debugPrint("Load new font '" & fontToLoad & "'")
 		
 		'' Load the new font

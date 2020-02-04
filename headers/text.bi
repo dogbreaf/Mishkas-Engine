@@ -33,7 +33,8 @@ Sub drawText( ByVal text As String, ByVal x As Integer, ByVal y As Integer, ByVa
 			''
 			
 		Case Else
-			Draw String ( x + (curX*8), y + (curY*10) ), char, rgb(0,0,0)
+			'Draw String ( x + (curX*8), y + (curY*10) ), char, rgb(0,0,0)
+			drawString(x + (curX*8), y + (curY*10), char, rgb(0,0,0))
 			
 			If underline Then
 				Line (x+(curX*8), y + (curY*10) + 8 )-STEP(8,0), rgb(0,0,0)
@@ -56,7 +57,8 @@ End Sub
 '' Wait for the user to press "E"
 Sub waitNext( ByVal posX As Integer = 0, ByVal posY As Integer = 0 )	
 	If posX and posY Then
-		Draw String ( posX - 64, posY ), "Press " & _KEY_ACTION & " " & Chr(31), rgb(0,0,0)
+		' Draw String ( posX - 64, posY ), "Press " & _KEY_ACTION & " " & Chr(31), rgb(0,0,0)
+		drawString(posX - 64, posY, "Press " & _KEY_ACTION & " " & Chr(31), rgb(0,0,0))
 	Endif
 	
 	Do
@@ -134,9 +136,11 @@ Function SelectMenu( options(Any) As _option, ByVal x As Integer = -1, ByVal y A
 			If i = selection then
 				Line ( posX + 8, (posY + 8) + ( i*10 ) )-STEP( boxWidth-16, 10), rgb(0,0,0), BF
 				
-				Draw String ( posX + 10, (posY + 10) + ( i*10 ) ), options(i).text, rgb(255,255,255)
+				'Draw String ( posX + 10, (posY + 10) + ( i*10 ) ), options(i).text, rgb(255,255,255)
+				drawString(posX + 10, (posY + 10) + ( i*10 ), options(i).text, rgb(255,255,255))
 			Else	
-				Draw String ( posX + 10, (posY + 10) + ( i*10 ) ), options(i).text, rgb(0,0,0)
+				'Draw String ( posX + 10, (posY + 10) + ( i*10 ) ), options(i).text, rgb(0,0,0)
+				drawString(posX + 10, (posY + 10) + ( i*10 ), options(i).text, rgb(0,0,0))
 			Endif
 		Next
 		
@@ -260,10 +264,15 @@ Function getNumberAmount( ByVal minimum As Integer, ByVal maximum As Integer ) A
 	Do
 		ScreenLock
 		menuBox( posX, posY, boxWidth, boxHeight )
-		Draw String (posX + (boxWidth/2) - 4, posY+8), chr(30), rgb(0,0,0)
-		Draw String (posX + (boxWidth/2) - 4, posY+boxHeight-12), chr(31), rgb(0,0,0)
+		'Draw String (posX + (boxWidth/2) - 4, posY+8), chr(30), rgb(0,0,0)
+		'Draw String (posX + (boxWidth/2) - 4, posY+boxHeight-12), chr(31), rgb(0,0,0)
 		
-		Draw String (posX + (boxWidth/2) - (len(str(ret))*4), posY + (boxHeight/2)-4), str(ret), rgb(0,0,0)
+		'Draw String (posX + (boxWidth/2) - (len(str(ret))*4), posY + (boxHeight/2)-4), str(ret), rgb(0,0,0)
+		
+		drawString(posX + (boxWidth/2) - 4, posY+8, chr(30), rgb(0,0,0))
+		drawString(posX + (boxWidth/2) - 4, posY+boxHeight-12, chr(31), rgb(0,0,0))
+		
+		drawString(posX + (boxWidth/2) - (len(str(ret))*4), posY + (boxHeight/2)-4, str(ret), rgb(0,0,0))
 		
 		drawButtonPrompt(_KEY_UP & "/" & _KEY_DN & " Select " & _KEY_ACTION & " Confirm")
 		ScreenUnLock

@@ -225,7 +225,8 @@ Function inventoryManager.InventoryScreen() As String
 		' the box for the list
 		menuBox(listX, listY, listW, listH)
 		
-		Draw String (listX+16, listY+16), "Items", rgb(0,0,0)
+		'Draw String (listX+16, listY+16), "Items", rgb(0,0,0)
+		drawString(listX+16, listY+16, "Items", rgb(0,0,0))
 		Line (listX+16,listY+26)-STEP(40,0), rgb(0,0,0)
 		
 		For i As Integer = scroll to (listHeight+scroll)
@@ -250,12 +251,16 @@ Function inventoryManager.InventoryScreen() As String
 				textColor = rgb(255,255,255)
 			Endif
 			
-			Draw String (listX+16, listY+36+((i-scroll)*10)), this.item(i).name, textColor
-			Draw String (listX+listW-16-(len(qstr)*8), listY+36+((i-scroll)*10)), qstr, qstrc
+			'Draw String (listX+16, listY+36+((i-scroll)*10)), this.item(i).name, textColor
+			'Draw String (listX+listW-16-(len(qstr)*8), listY+36+((i-scroll)*10)), qstr, qstrc
+			
+			drawString(listX+16, listY+36+((i-scroll)*10), this.item(i).name, textColor)
+			drawString(listX+listW-16-(len(qstr)*8), listY+36+((i-scroll)*10), qstr, qstrc)
 		Next
 		
 		If scroll+ListHeight < ListLength Then
-			Draw String (listX + (listW/2) - 12, listY + listH - 16), "...", rgb(0,0,0)
+			'Draw String (listX + (listW/2) - 12, listY + listH - 16), "...", rgb(0,0,0)
+			drawString(listX + (listW/2) - 12, listY + listH - 16, "...", rgb(0,0,0))
 		Endif
 		
 		' the box for the item description

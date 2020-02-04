@@ -399,7 +399,15 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 		
 	'''''''''''''''''''
 	Case "Background"
+		'' Splash works better so use it instead
 		LoadImageFile(arg(1), Screenptr)
+		
+		Return -1
+		
+	Case "Font"
+		If fileExists(arg(1)) Then
+			drawString(0,0,"",,,arg(1))
+		Endif
 		
 		Return -1
 	

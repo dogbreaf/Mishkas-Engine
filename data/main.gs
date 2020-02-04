@@ -4,6 +4,8 @@ Player SimpleCollision
 
 TextSpeed 20
 
+Font "data/slim_font.bmp"
+
 :Start
 Splash "data/mainmenu.bmp"
 Option Add MMLoad "Continue"

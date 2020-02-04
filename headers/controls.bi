@@ -94,13 +94,8 @@ Sub drawButtonPrompt( ByVal prompt As String )
 	posx = __XRES - len(prompt)*8 - 60
 	posy = __YRES - 20
 	
-	'' Create a border/shadow to make the text more readable
-	Draw String (posx-1, posy-1), prompt, rgb(0,0,0)
-	Draw String (posx+1, posy-1), prompt, rgb(0,0,0)
-	Draw String (posx-1, posy+1), prompt, rgb(0,0,0)
-	Draw String (posx+1, posy+1), prompt, rgb(0,0,0)
-	
 	'' Draw the string
-	Draw String (posx, posy), prompt, rgb(255,255,255)
+	'Draw String (posx, posy), prompt, rgb(255,255,255)
+	drawString(posx,posy, prompt, rgb(255,255,255), s_outline)
 End Sub
 
