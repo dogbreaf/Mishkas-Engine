@@ -118,7 +118,7 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 			gameRoom.playerZIndex = val( arg(2) ) 
 			
 		Case "Speed"
-			gameRoom.player.walk_speed = val( arg(2) )
+			gameRoom.player.walk_delay = val( arg(2) )
 			
 		Case "DisableInput"
 			gameRoom.disablePlayerInput = true
