@@ -25,6 +25,8 @@ Sub drawString( ByVal x As Integer, ByVal y As Integer, _
 	Static As Any Ptr		font
 	Static As String		fontName
 	
+	Dim As UInteger 		background = not colour
+	
 	'' Load any custom font as needed
 	If fontToLoad = "DEFAULT" Then
 		'' Reset to the default font
@@ -77,9 +79,27 @@ Sub drawString( ByVal x As Integer, ByVal y As Integer, _
 	
 	Case s_outline
 		'' Draw the outline
+		For relY As Integer = -1 to 1
+			For relX As Integer = -1 to 1
+				If font Then
+					Draw String (x+relX,y+relY), text,, font, CUSTOM, @blendText, @background
+				Else
+					Draw String (x+relX,y+relY), text, rgb(0,0,0)
+				Endif
+			Next
+		Next
 		
 	Case s_shadow
 		'' Draw a drop-shadow
+		For relY As Integer = 0 to 2
+			For relX As Integer = 0 to 2
+				If font Then
+					Draw String (x+relX,y+relY), text,, font, CUSTOM, @blendText, @background
+				Else
+					Draw String (x+relX,y+relY), text, rgb(0,0,0)
+				Endif
+			Next
+		Next
 		
 	End Select
 	
