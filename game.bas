@@ -15,6 +15,9 @@
 ' Image Loading Abstractions and other drawing related functions
 #include "headers/images.bi"
 
+' Custom text drawing
+#include "headers/drawtext.bi"
+
 ' Core graphics routines
 #include "headers/sprite.bi"
 #include "headers/tilemap.bi"
