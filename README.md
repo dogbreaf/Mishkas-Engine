@@ -23,4 +23,9 @@ Everything seems to build with the 64bit version of windows with no need for add
 
 FreeBASIC can be obtained at [FreeBASIC.net](https://freebasic.net/)
 
+###  Licenses
+This project uses [SDL Mixer](https://www.libsdl.org/license.php), which is licensed under the zlib license as part of SDL2. 
+It also uses [FreeImage](http://freeimage.sourceforge.net/license.html), which is provided under the GNU GPL v3.
+
+The project it's self is under the GNU GPL v3.
 
