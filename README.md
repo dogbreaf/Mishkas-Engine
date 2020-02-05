@@ -1,5 +1,7 @@
 # Mishkas Engine
 
+![alt-text](https://github.com/dogbreaf/Mishkas-Engine/blob/experemental/other%20assets/screenshot.jpg?raw=true "Screenshot of the game")
+
 This project is in a very unfinished state (Although if the code happens to be functional at any given moment I think there is enough functionality to maybe do something actually interesting).
 
 Obviously there are much better game engines for this purpose but I wanted to make my own, just to enjoy the challenges and process even if doing so isnt super worth-while.
