@@ -448,6 +448,7 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 	End Select
 End Function
 
+'' Inventory callbacks
 Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr ) As Integer
 	Static As inventoryManager inv	' The inventory
 	
@@ -514,5 +515,65 @@ Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr 
 		Return 0
 		
 	End Select
+End Function
+
+'' Audio callbacks
+Function musicAndSoundCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
+	Static As Mix_Music Ptr		bgMusic
+	
+	Select Case arg(0)
+	
+	Case "PlayMusic"
+		#ifdef _SND_SUPPORT_
+			If bgMusic <> 0 Then
+				'' Unload the old music
+				Mix_FreeMusic(bgMusic)
+				bgMusic = 0
+			Endif
+			
+			'' Load the music
+			bgMusic = Mix_LoadMus(arg(1))
+			Mix_PlayMusic(bgMusic, true)
+			
+			debugPrint("Playing music file " & arg(1))
+		#else
+			debugPrint(sound_disabled_str)
+		#endif
+		
+		Return -1
+		
+	Case "StopMusic"
+		#ifdef _SND_SUPPORT_
+			Mix_HaltMusic()
+			debugPrint("Stopping sound playback.")
+		#else
+			debugPrint(sound_disabled_str)
+		#endif
+		
+		Return -1
+		
+	Case "PauseMusic"
+		#ifdef _SND_SUPPORT_
+			Mix_PauseMusic()
+			debugPrint("Paused music playback.")
+		#else
+			debugPrint(sound_disabled_str)
+		#endif
+		
+		Return -1
+		
+	Case "ResumeMusic"
+		#ifdef _SND_SUPPORT_
+			Mix_ResumeMusic()
+			debugPrint("Resume paused music.")
+		#else
+			debugPrint(sound_disabled_str)
+		#endif
+		
+		Return -1
+	
+	End Select
+	
+	Return 0
 End Function
 

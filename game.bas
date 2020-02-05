@@ -7,13 +7,20 @@
 #define __XRES 800
 #define __YRES 600
 
+' Turn script debugging on 
 #define __DEBUGGING__
+
+' Turn sound support on (This uses SDL)
+#define _SND_SUPPORT_
 
 '' Send messages to stderr for debugging
 #include "headers/debug.bi"
 
 ' Image Loading Abstractions and other drawing related functions
 #include "headers/images.bi"
+
+' Play sounds
+#include "headers/audio.bi"
 
 ' Custom text drawing
 #include "headers/drawtext.bi"
@@ -64,6 +71,7 @@ Endif
 gameScript.addOperator(@textAndMenuCallback)
 gameScript.addOperator(@gameCallback)
 gameScript.addOperator(@inventoryManagerCallback)
+gameScript.addOperator(@musicAndSoundCallback)
 
 '' Load and execute the main script
 gameScript.load(main)
