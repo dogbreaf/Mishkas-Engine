@@ -29,9 +29,12 @@ Sub FrameCounter( ByVal x As Integer, ByVal y As Integer )
 End Sub
 
 '' Abstraction of image loading ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#ifdef _IMG_SUPPORT_
 #include "FreeImage.bi"
+#endif
 
 Function LoadImageFile( ByVal FileName As String, ByVal img As Any Ptr ) As Integer
+        #ifdef _IMG_SUPPORT_
 	'' vars
 	Dim As FREE_IMAGE_FORMAT	format
 	Dim As FIBITMAP	Ptr		temp_buffer1
@@ -89,6 +92,11 @@ Function LoadImageFile( ByVal FileName As String, ByVal img As Any Ptr ) As Inte
 	FreeImage_Unload(temp_buffer2)
 	
 	Return 1
+        #else
+        BLoad FileName, Img
+        
+        Return 1
+        #endif
 End Function
 
 

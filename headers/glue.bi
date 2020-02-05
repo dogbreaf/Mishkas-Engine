@@ -519,7 +519,9 @@ End Function
 
 '' Audio callbacks
 Function musicAndSoundCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
+        #ifdef _SND_SUPPORT_
 	Static As Mix_Music Ptr		bgMusic
+        #endif
 	
 	Select Case arg(0)
 	
