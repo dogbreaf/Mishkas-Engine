@@ -571,6 +571,12 @@ Function musicAndSoundCallback( arg(Any) As String, thisScript As script Ptr ) A
 		#endif
 		
 		Return -1
+		
+	Case "SetDialogue_SFX"
+		debugPrint("Set SFX file for dialogue...")
+		DialogueSound( arg(1), false )
+		
+		Return -1
 	
 	End Select
 	

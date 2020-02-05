@@ -5,6 +5,7 @@ Player SimpleCollision
 TextSpeed 20
 
 Font "data/slim_font.bmp"
+SetDialogue_SFX "data/audio/ui_dialogue.wav"
 
 :Start
 Splash "data/mainmenu.bmp"

@@ -44,6 +44,10 @@ Sub drawText( ByVal text As String, ByVal x As Integer, ByVal y As Integer, ByVa
 		End Select
 		
 		If speed > 0 Then
+			' Play any loaded sfx
+			DialogueSound()
+			
+			' draw the text slowly
 			Sleep speed,1
 		Endif
 		
