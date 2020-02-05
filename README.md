@@ -17,6 +17,10 @@ $ fbc game.bas
 $ fbc edit2.bas
 ```
 
+On linux you will need to install some dev packages if you do not normally use freebasic. I will include a list of what those are at some point. Additionally you will also need your distro's equivalent of `libsdl2-dev` and `libsdl2-mixer-dev` for sound, otherwise remove `#define _SND_SUPPORT_` from the top of game.bas to completely disable audio.
+
+Everything seems to build with the 64bit version of windows with no need for additional dependancies, although I need to check that out more thoroughly later.
+
 FreeBASIC can be obtained at [FreeBASIC.net](https://freebasic.net/)
 
 
