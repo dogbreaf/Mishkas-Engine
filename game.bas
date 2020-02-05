@@ -10,18 +10,17 @@
 ' Turn script debugging on 
 #define __DEBUGGING__
 
-'' Sound and image support break windows compilation
+'' Sound support breaks windows compilation
 #ifndef __FB_WIN32__
-
 ' Turn sound support on (This uses SDL)
 #define _SND_SUPPORT_
+'
+#else
+#Print Disabling audio libraries for windows build...
+#endif
+
 ' Turn on non-bitmap suport
 #define _IMG_SUPPORT_
-
-''
-#else
-#Print Disabling external libraries for windows build...
-#endif
 
 '' Send messages to stderr for debugging
 #include "headers/debug.bi"

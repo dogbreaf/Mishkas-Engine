@@ -205,7 +205,7 @@ type script
         
         lineNumber      As Integer
         
-        stderr          As Integer
+        _stderr          As Integer
         
         callBacks(Any)  As Function ( (Any) As String, As script Ptr ) As Integer
                 
@@ -245,9 +245,9 @@ Sub script.load( ByVal fileName As String )
         
         Open fileName for input as #hndl
         
-        If stderr = 0 Then
-                stderr = FreeFile
-                Open Err For Output As #stderr
+        If _stderr = 0 Then
+                _stderr = FreeFile
+                Open Err For Output As #_stderr
         End If
         
         Do
@@ -483,9 +483,9 @@ Sub script.parseString( ByVal code As String )
         Dim As String tempLabel,iterator
         Dim As Integer fromNum,toNum
         
-        If stderr = 0 Then
-                stderr = FreeFile
-                Open Err For Output As #stderr
+        If _stderr = 0 Then
+                _stderr = FreeFile
+                Open Err For Output As #_stderr
         End If
         
         Do
@@ -586,9 +586,9 @@ Sub script.addOperator( callBack As Function ( (any) As String, As script Ptr ) 
         this.callBacks(index) = callBack
 End Sub
 
-'' Send an error message to stdErr
+'' Send an error message to stderr
 Sub script.sendError( ByVal msg As String, ByVal fatal As Boolean = false )
-        Print #this.stderr, "Error on Line " & this.lineNumber & ": " & msg
+        Print #this._stderr, "Error on Line " & this.lineNumber & ": " & msg
         
         If fatal Then
                 End
