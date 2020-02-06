@@ -442,6 +442,8 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 		
 		thisScript->stack.setVar(resultVar, result)
 		
+		Return -1
+		
 	'''''''''''''''''''
 	Case "Background"
 		'' Splash works better so use it instead
