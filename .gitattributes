@@ -1,0 +1,9 @@
+# Please stop labelling my project incorrectly ;w;
+# Since FreeBASIC is not supported in linguist (and I don't want to add it and
+# make a PR) and because .gs would never be accepted anyway, and they have been
+# havering on adding an option to label files as "Other" or "Unkown language"
+# (See github/linguist issue #3665), I hencefourth declare everything as Text.
+# Which according to linguist means this project has no code at all yay!
+*.bas linguist-language="Text"
+*.bi linguist-language="Text"
+*.gs linguist-language="Text"
