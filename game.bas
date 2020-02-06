@@ -10,26 +10,20 @@
 ' Turn script debugging on 
 #define __DEBUGGING__
 
-'' Sound support breaks windows compilation
-#ifndef __FB_WIN32__
 ' Turn sound support on (This uses SDL)
 #define _SND_SUPPORT_
-'
-#else
-#Print Disabling audio libraries for windows build...
-#endif
 
 ' Turn on non-bitmap suport
 #define _IMG_SUPPORT_
 
-'' Send messages to stderr for debugging
+' Send messages to stderr for debugging
 #include "headers/debug.bi"
-
-' Image Loading Abstractions and other drawing related functions
-#include "headers/images.bi"
 
 ' Play sounds
 #include "headers/audio.bi"
+
+' Image Loading Abstractions and other drawing related functions
+#include "headers/images.bi"
 
 ' Custom text drawing
 #include "headers/drawtext.bi"

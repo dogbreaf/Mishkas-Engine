@@ -35,10 +35,11 @@ End Sub
 
 Function LoadImageFile( ByVal FileName As String, ByVal img As Any Ptr ) As Integer
         #ifdef _IMG_SUPPORT_
+                
 	'' vars
 	Dim As FREE_IMAGE_FORMAT	format
-	Dim As FIBITMAP	Ptr		temp_buffer1
-	Dim As FIBITMAP	Ptr		temp_buffer2
+	Dim As FIBITMAP Ptr             temp_buffer1
+	Dim As FIBITMAP Ptr	        temp_buffer2
 	Dim As fb.Image Ptr		converted
 	
 	Dim As Integer			w,h
@@ -90,8 +91,9 @@ Function LoadImageFile( ByVal FileName As String, ByVal img As Any Ptr ) As Inte
 	ImageDestroy(converted)
 	FreeImage_Unload(temp_buffer1)
 	FreeImage_Unload(temp_buffer2)
-	
+
 	Return 1
+        
         #else
         BLoad FileName, Img
         
