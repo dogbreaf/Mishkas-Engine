@@ -1,6 +1,6 @@
 # Mishkas Engine
 
-![alt-text](https://github.com/dogbreaf/Mishkas-Engine/blob/experemental/other%20assets/screenshot.jpg?raw=true "Screenshot of the game")
+![alt-text](https://github.com/dogbreaf/Mishkas-Engine/blob/master/other%20assets/screenshot.jpg?raw=true "Screenshot of the game")
 
 This project is in a very unfinished state (Although if the code happens to be functional at any given moment I think there is enough functionality to maybe do something actually interesting).
 
@@ -28,5 +28,7 @@ FreeBASIC can be obtained at [FreeBASIC.net](https://freebasic.net/)
 ##  Licenses
 This project uses [SDL Mixer](https://www.libsdl.org/license.php), which is licensed under the zlib license as part of SDL2.
 It also uses [FreeImage](http://freeimage.sourceforge.net/license.html), which is provided under the GNU GPL v3.
+
+I wont be distributing binaries for SDL or FreeImage in this repo, however I may if I make an actual game include them (and their relevant licences) with it.
 
 The project it's self is under the GNU GPL v3.
