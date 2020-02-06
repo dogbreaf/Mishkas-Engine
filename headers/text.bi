@@ -11,7 +11,7 @@ Sub menuBox( ByVal x As Integer, ByVal y As Integer, ByVal w As Integer, ByVal h
 End Sub
 
 '' Format a text string and draw it
-Sub drawText( ByVal text As String, ByVal x As Integer, ByVal y As Integer, ByVal w As Integer = 80, ByVal speed As Integer = 0 )
+Sub c_drawText( ByVal text As String, ByVal x As Integer, ByVal y As Integer, ByVal w As Integer = 80, ByVal speed As Integer = 0 )
 	'' Cursor position
 	Dim As Integer	curX
 	Dim As Integer	curY
@@ -196,7 +196,7 @@ Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true, ByVal bi
 	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
 	
 	menuBox( posX, posY, boxWidth, boxHeight )
-	drawText( text, posX + 16, posY + 16, (boxWidth/8)-4, textSpeed )
+	c_drawText( text, posX + 16, posY + 16, (boxWidth/8)-4, textSpeed )
 	
 	If confirmBtn Then
 		waitNext( posX + boxWidth - 24, posY + boxHeight - 20 )
