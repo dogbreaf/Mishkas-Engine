@@ -1,7 +1,12 @@
 Goto EndShop
 :LoadShop
+If %LoadGame% != true
+	StopMusic
+	PlaySFX "data/audio/transition_tmp.wav"
+	Transition FADE
+	Sleep 350
+Endif
 
-Transition FADE
 LoadTileSet "data/tileset/tileset.bmp"
 LoadTileMap "data/map/shop.dat"
 
@@ -28,6 +33,8 @@ Trigger 24 18 Shop_Shelves
 
 Trigger 27 17 Shop_Shelves
 Trigger 27 18 Shop_Shelves
+
+PlayMusic "data/audio/sleepy_cave.mp3"
 
 Goto Main
 

@@ -1,6 +1,12 @@
 Goto End_Pharmacy
 :LoadPharmacy
-Transition FADE
+If %LoadGame% != true
+	StopMusic
+	PlaySFX "data/audio/transition_tmp.wav"
+	Transition FADE
+	Sleep 350
+Endif
+
 LoadTileSet "data/tileset/tileset.bmp"
 LoadTileMap "data/map/pharmacy.dat"
 
@@ -36,6 +42,9 @@ Trigger 35 28 Pharmacy_CashRegister
 // PC
 Trigger 28 36 Pharmacy_Terminal
 Trigger 29 36 Pharmacy_Terminal
+
+PlayMusic "data/audio/sleepy_cave.mp3"
+
 Goto Main
 
 :Pharmacy_CashRegister

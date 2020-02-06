@@ -1,6 +1,12 @@
 Goto End_MainMap
 :LoadMap
-Transition FADE
+If %LoadGame% != true
+	StopMusic
+	PlaySFX "data/audio/transition_tmp.wav"
+	Transition FADE
+	Sleep 350
+Endif
+:LoadMap_SkipTransition
 
 LoadTileSet "data/tileset/tileset.bmp"
 LoadTileMap "data/map/map.dat"
@@ -55,6 +61,10 @@ Trigger 54 27 Map_Flats
 //
 Trigger 28 24 Map_Mark
 Trigger 29 24 Map_Mark
+
+// Finally set the music
+// Play music test
+PlayMusic "data/audio/USL_LOOP.mp3"
 
 Goto Main
 

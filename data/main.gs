@@ -15,7 +15,6 @@ Option Add EndOfGame "Quit"
 Option Select
 
 Quit
-
 :NewGame
 
 // test the inventory function
@@ -23,11 +22,9 @@ Inventory Add UseMedkit "MedKit" 10 "A first aid kit."
 Inventory Add UseBullet "Bullets" 20 "Bullets for a pistol."
 Inventory Add UsePistol "Pistol" 1 "A small pistol." true
 
-// Play music test
-PlayMusic "data/audio/USL_LOOP.mp3"
-
 // Load the main area
-Goto LoadMap
+Transition BLINDS
+Goto LoadMap_SkipTransition
 
 // Start the game
 :Main
@@ -100,4 +97,6 @@ Include "data/script/items.gs"
 Include "data/script/map.gs"
 Include "data/script/pharmacy.gs"
 Include "data/script/shop.gs"
+
+:EndOfGame
 

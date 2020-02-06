@@ -607,12 +607,16 @@ Function musicAndSoundCallback( arg(Any) As String, thisScript As script Ptr ) A
 	Case "PlaySFX"
 		#ifdef _SND_SUPPORT_
 			debugPrint("Play sound effect " & arg(1))
-			Dim As Mix_chunk Ptr	sfx
+			Static As Mix_chunk Ptr		sfx
 			
+			'' Clear the previously played sfx
+			If sfx <> 0 Then
+				Mix_FreeChunk(sfx):sfx = 0
+			Endif
+			
+			'' Load and play the new one
 			sfx = Mix_LoadWav(arg(1))			
 			Mix_PlayChannel(-1,sfx,0)
-			
-			Mix_FreeChunk(sfx):sfx = 0
 		#else
 			debugPrint(sound_disabled_str)
 		#endif
