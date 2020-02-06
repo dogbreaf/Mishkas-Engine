@@ -37,6 +37,7 @@ RunGame
 Option Add MMInv "Inventory"
 Option Add MMSave "Save"
 Option Add MMLoad "Load"
+Option Add MMOptions "Options"
 Option Add MMQuit "Quit"
 Option Add Main "Cancel"
 
@@ -67,7 +68,9 @@ Goto Main
 LoadStack "data/game.sav"
 Inventory Load "data/inventory.sav"
 If %saved% = true
+	// Update variables
 	Player Position %_PlayerX% %_PlayerY%
+	MusicVolume %musicVol%
 
 	Dialouge "Loaded saved data. (%_PlayerX% %_PlayerY% in %PreviousLocation%)"
 
@@ -76,6 +79,20 @@ If %saved% = true
 Endif
 Dialouge "Save data was not found or was corrupt."
 Goto Start
+
+//////////////////////////////////////
+:MMOptions
+Option Add MMOVol "Music Vol."
+Option Add MainMenu "Back"
+Option Select
+
+:MMOVol
+Dialogue "Set music volume..." false
+NumberInput musicVol 0 128
+
+MusicVolume %musicVol%
+
+Goto MainMenu
 
 // Utility scripts
 Include "data/script/items.gs"

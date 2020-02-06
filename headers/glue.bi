@@ -429,6 +429,20 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 		Return -1
 		
 	'''''''''''''''''''
+	'' User input
+	Case "NumberInput"
+		Dim As Integer minVal = val(arg(2))
+		Dim As Integer maxVal = val(arg(3))
+		
+		Dim As Integer result
+		
+		Dim As String resultVar = arg(1)
+		
+		result = getNumberAmount(minVal, maxVal)
+		
+		thisScript->stack.setVar(resultVar, result)
+		
+	'''''''''''''''''''
 	Case "Background"
 		'' Splash works better so use it instead
 		LoadImageFile(arg(1), Screenptr)
@@ -568,6 +582,16 @@ Function musicAndSoundCallback( arg(Any) As String, thisScript As script Ptr ) A
 		#ifdef _SND_SUPPORT_
 			Mix_ResumeMusic()
 			debugPrint("Resume paused music.")
+		#else
+			debugPrint(sound_disabled_str)
+		#endif
+		
+		Return -1
+		
+	Case "MusicVolume"
+		#ifdef _SND_SUPPORT_
+			Mix_VolumeMusic(val(arg(1)))
+			debugPrint("Set music volume to " & arg(1) & ".")
 		#else
 			debugPrint(sound_disabled_str)
 		#endif
