@@ -425,8 +425,8 @@ Sub script.execute()
                 Case "End"
                 	Exit Do
                 
-                Case "Endif"
-                        ' no need to do anything
+                Case "Endif", "", "//"
+                        ' These are ignored.
                         
                 Case Else
                         Dim As Integer numCallBacks = UBound(this.callBacks)
