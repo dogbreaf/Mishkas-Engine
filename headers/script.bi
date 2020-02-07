@@ -370,6 +370,15 @@ Sub script.execute()
                                 Dim As Double assValue = val(assignment)
                                 
                                 *variable = str(oldValue / assValue)
+                                
+                        Case "&"
+                        	'' Concatinate
+                        	Dim As String Ptr variable = this.stack.varPtr(varName)
+                        	
+                                Dim As String oldValue = *variable
+                                Dim As String assValue = assignment
+                                
+                                *variable = oldValue & assValue
                         
                         End Select
                         

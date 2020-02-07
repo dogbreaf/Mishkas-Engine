@@ -319,7 +319,7 @@ Function inventoryManager.InventoryScreen(ByVal useString As String = "Use", _
 					"Are you sure you want to drop " & numberToDrop & "x " & this.item(selected).name & "(s)?") = "DROP" Then
 				
 					debugPrint("User wants to drop " & numberToDrop & " of " & selected)
-					this.remItem(this.item(selected).name, numberToDrop)
+					this.remItem(this.item(selected).trigger, numberToDrop)
 					debugPrint(" -> Done")
 					
 					'' Update list size

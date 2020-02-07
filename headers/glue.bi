@@ -48,6 +48,8 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 	Case "StatusText"
 		roomText = arg(1)
 		
+		Return -1
+		
 	Case "SetTile"
 		Dim As Integer tx = val( arg(1) )
 		Dim As Integer ty = val( arg(2) )
