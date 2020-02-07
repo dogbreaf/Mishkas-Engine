@@ -501,6 +501,23 @@ Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr 
 			
 			Return -1
 			
+		Case "HasItem"
+			'' set a variable to the string true/false depending on the presence of an item
+			Dim As String vrn = arg(2)
+			Dim As String itm = arg(3)
+			Dim As String ret
+			
+			If inv.hasItem(itm) Then
+				ret = "true"
+			Else
+				ret = "false"
+			Endif
+			
+			'' set the var
+			thisScript->stack.setVar(vrn, ret)
+			
+			Return -1
+			
 		Case "Save"
 			inv.saveInventory(arg(2))
 			
