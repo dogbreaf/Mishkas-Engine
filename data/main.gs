@@ -85,7 +85,9 @@ Option Select
 
 :MMOVol
 Dialogue "Set music volume..." false
-NumberInput musicVol 0 128
+NumberInput musicVol 0 12
+
+Set musicVol *= 10
 
 MusicVolume %musicVol%
 
