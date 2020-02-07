@@ -261,16 +261,16 @@ Sub room.Update()
 		Endif
 	ScreenUnLock
 	
-	'' Player inputs
-	If not disablePlayerInput Then
-		player.input( this.map )
-	Endif
+	'' Autoscroll the viewport
+	this.viewport()
 	
 	'' Update objects
 	this.updateObjects()
 	
-	'' Autoscroll the viewport
-	this.viewport()
+	'' Player inputs
+	If not disablePlayerInput Then
+		player.input( this.map )
+	Endif
 	
 	'' Update trigger
 	player.onTile(map, playerX, playerY)
