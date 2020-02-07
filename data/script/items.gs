@@ -14,7 +14,7 @@ Dialouge "There is a time and a place for everything..."
 Goto ReturnToLabel
 
 :UsePainkiller
-Inventory Rem "Painkiller" 1
+Inventory Rem "UsePainkiller" 1
 Dialouge "You dry swallow the pills, they are aweful and you aren't\nsure they did anything."
 Goto ReturnToLabel
 
@@ -23,7 +23,7 @@ Dialouge "This shit is worthless..."
 Goto ReturnToLabel
 
 :UseChocolate
-Inventory Rem "Chocolate" 1
+Inventory Rem "UseChocolate" 1
 Dialouge "The chocolate is old and has bloom, but it still tastes good."
 Goto ReturnToLabel
 

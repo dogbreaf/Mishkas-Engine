@@ -50,11 +50,12 @@ Type inventoryManager
 					  ByVal As Boolean = true) As String
 End Type
 
-Function inventoryManager.getItemID( ByVal itemName As String ) As Integer
+Function inventoryManager.getItemID( ByVal trigger As String ) As Integer
 	Dim As Integer count = UBound( this.item )
 	
 	For i As Integer = 0 to count
-		If this.item(i).name = itemName Then
+		debugPrint( " -> " & this.item(i).trigger & " - " & trigger)
+		If this.item(i).trigger = trigger Then
 			Return i
 		Endif
 	Next
@@ -69,12 +70,12 @@ Sub inventoryManager.addItem( ByVal itemName As String, _
 			ByVal keyItem As Boolean = false )
 			
 	Dim As Integer count = UBound( this.item ) + 1
-	Dim As Integer ID = this.getItemID( itemName )
+	Dim As Integer ID = this.getItemID( trigger )
 	
 	debugPrint("Add new item " & itemName & " to inventory...")
 	
 	If ID = -1 Then
-		debugPrint(" -> Item does not exist in inventory, adding a new one.")
+		debugPrint(" -> Item does not exist in inventory (" & ID & "), adding a new one.")
 		ReDim Preserve this.item( count ) As inventoryItem
 		
 		this.item(count).name = itemName
@@ -91,10 +92,10 @@ Sub inventoryManager.addItem( ByVal itemName As String, _
 	Endif
 End Sub
 
-Sub inventoryManager.remItem( ByVal itemName As String, ByVal quantity As Integer = 1 )
-	Dim As Integer ID = getItemId(itemName)
+Sub inventoryManager.remItem( ByVal trigger As String, ByVal quantity As Integer = 1 )
+	Dim As Integer ID = getItemId(trigger)
 	
-	debugPrint("Remove " & quantity & " of " & itemName & "(" & ID & ") from inventory...")
+	debugPrint("Remove " & quantity & " of " & trigger & "(" & ID & ") from inventory...")
 	
 	If ID > -1 Then
 		' decriment the item quantity
@@ -137,22 +138,22 @@ Sub inventoryManager.clearItems()
 	ReDim this.item(-1) As inventoryItem
 End Sub
 
-Function inventoryManager.hasItem( ByVal itemName As String ) As Boolean
-	If getItemID(itemName) > -1 Then
+Function inventoryManager.hasItem( ByVal trigger As String ) As Boolean
+	If getItemID(trigger) > -1 Then
 		Return true
 	Else
 		Return false
 	Endif
 End Function
 
-Function inventoryManager.useItem( ByVal itemName As String ) As String
-	Dim As Integer ID = getItemID(itemName)
+Function inventoryManager.useItem( ByVal trigger As String ) As String
+	Dim As Integer ID = getItemID(trigger)
 	
 	If ID = -1 Then
 		Return ""
 		
 	Elseif item(ID).count > 0 Then
-		this.remItem(itemName)
+		this.remItem(trigger)
 		
 		Return this.item(ID).trigger
 	Endif
