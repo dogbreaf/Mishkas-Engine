@@ -22,6 +22,9 @@ Inventory Add UseMedkit "MedKit" 10 "A first aid kit."
 Inventory Add UseBullet "Bullets" 20 "Bullets for a pistol."
 Inventory Add UsePistol "Pistol" 1 "A small pistol." true
 
+// For testing
+StatusText "HP \c2 \c2 \c2 "
+
 // Load the main area
 Transition BLINDS
 Goto LoadMap_SkipTransition

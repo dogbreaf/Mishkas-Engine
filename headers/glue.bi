@@ -11,6 +11,8 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 	' less useful because I can only access it from this function.
 	' I don't think it is the intended use case for Static either
 	' (to store such a large data structure)
+	
+	Static As String	roomText	' Permanant floating text
 
 	Select Case arg(0)
 	
@@ -42,6 +44,9 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 	Case "RefreshTiles"
 		gameRoom.RefreshTileMap()
 		Return -1
+		
+	Case "StatusText"
+		roomText = arg(1)
 		
 	Case "SetTile"
 		Dim As Integer tx = val( arg(1) )
@@ -310,7 +315,7 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 	Case "RunGame","ResumeGame"
 		' This is basically the main game loop
 		Do
-			gameRoom.update()
+			gameRoom.update(roomText)
 			
 			'' Check triggers
 			Dim As String trigger = gameRoom.getTrigger()

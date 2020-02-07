@@ -77,7 +77,7 @@ type room
 	Declare Sub setObject( ByVal As Integer, ByVal As String, ByVal As Integer, ByVal As Integer, ByVal As Integer = 1 )
 	
 	'' Running the game
-	Declare Sub Update()
+	Declare Sub Update( ByVal As String = "" )
 	Declare Sub UpdateObjects()
 	
 	'' Lighting engine
@@ -226,7 +226,7 @@ Function room.getTrigger() As String
 End Function
 
 ''''''
-Sub room.Update()	
+Sub room.Update( ByVal floatingText As String = "" )	
 	ScreenLock
 		' Blank the screen
 		Line (0,0)-((__XRES/__SCALE),(__YRES/__SCALE)), rgb(0,0,0), BF
@@ -254,6 +254,9 @@ Sub room.Update()
 		
 		'' Scale the graphics
 		scaleScreen()
+		
+		'' Draw the floating room text (could be HP or whatever
+		drawString(32,32, floatingText, rgb(255,255,255), S_OUTLINE)
 		
 		'' Draw a button prompt for interactive tiles
 		If (trigger(PlayerX, PlayerY) <> "") and map.tiles(PlayerX, PlayerY).flag(3) Then
