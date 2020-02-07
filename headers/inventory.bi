@@ -32,6 +32,7 @@ Type inventoryManager
 	Declare Sub remItem( ByVal As String, ByVal As Integer = 1 )
 	
 	Declare Sub deleteItem( ByVal As Integer )
+	Declare Sub clearItems()
 	
 	' Check if the player has a certain item
 	Declare Function hasItem( ByVal As String ) As Boolean
@@ -44,7 +45,9 @@ Type inventoryManager
 	Declare Sub loadInventory( ByVal As String )
 	
 	' Show the GUI
-	Declare Function InventoryScreen() As String
+	Declare Function InventoryScreen(ByVal As String = "Use", _
+					  ByVal As String = "Items", _
+					  ByVal As Boolean = true) As String
 End Type
 
 Function inventoryManager.getItemID( ByVal itemName As String ) As Integer
@@ -126,7 +129,12 @@ Sub inventoryManager.deleteItem( ByVal ID As Integer )
 		Endif
 	Next 
 	
-	debugPrint(" -> 1 item deleted from " & count & " items, leaving " & newID & " items.")
+	debugPrint(" -> 1 item deleted from " & (count+1) & " items, leaving " & newID & " items.")
+End Sub
+
+Sub inventoryManager.clearItems()
+	'' Clear the inventory
+	ReDim this.item(-1) As inventoryItem
 End Sub
 
 Function inventoryManager.hasItem( ByVal itemName As String ) As Boolean
@@ -188,7 +196,9 @@ Sub inventoryManager.loadInventory( ByVal fileName As String )
 	Endif
 End Sub
 
-Function inventoryManager.InventoryScreen() As String
+Function inventoryManager.InventoryScreen(ByVal useString As String = "Use", _
+					  ByVal title As String = "Items", _
+					  ByVal notShop As Boolean = true) As String
 	'' Window box dimensions
 	Dim As Integer listX, listY, listW, listH
 	Dim As Integer descX, descY, descW, descH
@@ -225,9 +235,8 @@ Function inventoryManager.InventoryScreen() As String
 		' the box for the list
 		menuBox(listX, listY, listW, listH)
 		
-		'Draw String (listX+16, listY+16), "Items", rgb(0,0,0)
-		drawString(listX+16, listY+16, "Items", rgb(0,0,0))
-		Line (listX+16,listY+26)-STEP(40,0), rgb(0,0,0)
+		drawString(listX+16, listY+16, title, rgb(0,0,0))
+		Line (listX+16,listY+26)-STEP(len(title)*8,0), rgb(0,0,0)
 		
 		For i As Integer = scroll to (listHeight+scroll)
 			If i > listLength Then
@@ -279,10 +288,14 @@ Function inventoryManager.InventoryScreen() As String
 		ElseIf getUserKey(kbd_Down, false, 200) Then
 			selected += 1
 		ElseIf getUserKey(kbd_Action, true) Then
-			selectionMenu.addOption("Use", "UseItem")
+			If (notShop = false) and (this.item(selected).key = true) Then
+				' Can't sell key items
+			Else
+				selectionMenu.addOption(useString, "UseItem")
+			Endif
 			
 			'' You can't drop key items
-			If this.item(selected).key = false Then
+			If (this.item(selected).key = false) and (notShop) Then
 				selectionMenu.addOption("Drop", "DropItem")
 			Endif
 			

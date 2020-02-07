@@ -467,6 +467,7 @@ End Function
 '' Inventory callbacks
 Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr ) As Integer
 	Static As inventoryManager inv	' The inventory
+	Static As inventoryManager shop	' A shop the player can buy from
 	
 	Select Case arg(0)
 	
@@ -522,6 +523,56 @@ Function inventoryManagerCallback( arg(Any) As String, thisScript As Script Ptr 
 			
 			Return -1
 		
+		End Select
+		
+		thisScript->sendError("Unknown inventory function, '" & arg(1) & "'")
+		Return 0
+		
+	Case "Shop"
+		'' Buy/sell items
+		Select Case arg(1)
+		
+		Case "Add"
+			Dim As String itemTrigger	= arg(2)
+			Dim As String itemName		= arg(3)
+			Dim As Integer quantity		= val(arg(4))
+			Dim As String description	= arg(5)
+			Dim As Boolean keyItem		= IIF(arg(6) = "true", true, false)
+			
+			shop.addItem(itemName, quantity, itemTrigger, description, keyItem)
+			
+			Return -1
+			
+		Case "Clear"
+			shop.clearItems()
+			
+			Return -1
+			
+		Case "Rem"
+			shop.remItem(arg(2), IIF(arg(3) = "", 1, val(arg(3))))
+			
+			Return -1
+			
+		Case "Buy"
+			Dim As String triggerLabel
+			triggerLabel = shop.InventoryScreen("Buy", IIF(arg(2) = "", "Shop", arg(2)), false)
+			
+			If triggerLabel <> "" Then
+				thisScript->seekTo(":" & triggerLabel, true)
+			Endif
+			
+			Return -1
+			
+		Case "Sell"
+			Dim As String triggerLabel
+			triggerLabel = inv.InventoryScreen("Sell", "Sell", false)
+			
+			If triggerLabel <> "" Then
+				thisScript->seekTo(":" & triggerLabel, true)
+			Endif
+			
+			Return -1
+			
 		End Select
 		
 		thisScript->sendError("Unknown inventory function, '" & arg(1) & "'")
