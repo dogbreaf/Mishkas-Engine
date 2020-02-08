@@ -3,6 +3,15 @@
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Static Shared As Integer	textSpeed = 10
 
+#macro stashScreen( a )
+	Dim As fb.Image Ptr a = ImageCreate( __XRES, __YRES )
+	Get (0,0)-(__XRES-1, __YRES-1), a
+#endMacro
+#macro restoreScreen( a )
+	Put (0,0), a, PSET
+	ImageDestroy(thisScreen):a = 0
+#endMacro
+
 '' Name all of our colors
 enum textColors
 	ansi_black = 30
@@ -204,6 +213,8 @@ Function SelectMenu( options(Any) As _option, ByVal x As Integer = -1, ByVal y A
 	
 	Dim As Integer	selection
 	
+	stashScreen(thisScreen)
+	
 	'' Center the menu by default
 	If x = -1 Then
 		x = (__XRES/2)-(boxWidth/2)
@@ -252,18 +263,20 @@ Function SelectMenu( options(Any) As _option, ByVal x As Integer = -1, ByVal y A
 		Sleep 1,1
 	Loop Until GetUserKey(kbd_Quit, true)
 	
+	restoreScreen(thisScreen)
+	
 	Return ""
 End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true, ByVal bigMode As Boolean = false )
-	Dim As fb.Image Ptr thisScreen
-	
 	Dim As Integer	boxWidth = IIF(__XRES < 512, __XRES-32, 512)
 	Dim As Integer	boxHeight = 128
 	
 	Dim As Integer	posX = (__XRES/2)-(boxWidth/2) 
 	Dim As Integer	posY = __YRES - (boxHeight + IIF(__XRES < 512, 16, 64))
+	
+	stashScreen(thisScreen)
 	
 	If bigMode Then
 		boxWidth = __XRES-64
@@ -272,9 +285,6 @@ Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true, ByVal bi
 		posX = (__XRES/2)-(boxWidth/2) 
 		posY = 32
 	Endif
-	
-	thisScreen = imageCreate( __XRES, __YRES )
-	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
 	
 	menuBox( posX, posY, boxWidth, boxHeight )
 	c_drawText( text, posX + 16, posY + 16, (boxWidth/8)-4, textSpeed )
@@ -287,14 +297,16 @@ Sub dialouge( ByVal text As String, ByVal confirmBtn As Boolean = true, ByVal bi
 		
 		'' Restore the screen when the user confirms
 		'' If the user doesnt need to confirm then the dialouge is supposed to hang around
-		Put (0,0), thisScreen, PSET
+		restoreScreen(thisScreen)
 	Endif
 	
-	ImageDestroy(thisScreen)
+	If thisScreen <> 0 Then
+		ImageDestroy(thisScreen)
+		thisScreen = 0
+	Endif
 End Sub
 
 Function confirm( ByVal gotoLabel As String, ByVal message As String = "" ) As String
-	Dim As fb.Image Ptr	thisScreen
 	Dim As _option		yesNo(1)
 	
 	Dim As Integer		boxWidth = 48
@@ -311,9 +323,7 @@ Function confirm( ByVal gotoLabel As String, ByVal message As String = "" ) As S
 	yesNo(1).text = "No"
 	yesNo(1).label = ""
 	
-	'' Save what is on the screen so when the menu closes we can redraw the area under it
-	thisScreen = imageCreate( __XRES, __YRES )
-	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
+	stashScreen(thisScreen)
 	
 	'' Show the correct text underneath
 	If message <> "" Then
@@ -324,8 +334,7 @@ Function confirm( ByVal gotoLabel As String, ByVal message As String = "" ) As S
 	ret = selectmenu( yesNo(), posX, posY, boxWidth )
 	
 	'' Redraw the screen without the option dialouge
-	Put (0,0), thisScreen, PSET
-	ImageDestroy(thisScreen)
+	restoreScreen(thisScreen)
 	
 	Return ret
 End Function
@@ -334,8 +343,6 @@ Function getNumberAmount( ByVal minimum As Integer, ByVal maximum As Integer ) A
 	'' Pick a number amount
 	Dim As Integer ret
 	
-	Dim As fb.Image Ptr	thisScreen
-	
 	Dim As Integer		boxWidth = 60
 	Dim As Integer		boxHeight = 45
 	
@@ -343,8 +350,7 @@ Function getNumberAmount( ByVal minimum As Integer, ByVal maximum As Integer ) A
 	Dim As Integer		posX = (__XRES/2) + (IIF(__XRES < 512, (__XRES-32)/2, 256)-boxWidth) 
 	Dim As Integer		posY = (__YRES-IIF(__XRES < 512, 128, 192)) - (boxHeight+20)
 	
-	thisScreen = imageCreate( __XRES, __YRES )
-	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
+	stashScreen(thisScreen)
 	
 	Do
 		ScreenLock
@@ -378,8 +384,7 @@ Function getNumberAmount( ByVal minimum As Integer, ByVal maximum As Integer ) A
 		Sleep regulateFPS(60),1
 	Loop
 	
-	Put (0,0), thisScreen, PSET
-	ImageDestroy(thisScreen)
+	restoreScreen(thisScreen)
 	
 	Return ret
 End Function
@@ -389,9 +394,7 @@ Function getUserString( ByVal prompt As String = "?", ByVal maxLen As Integer = 
 	Dim As String		ret
 	Dim As Integer		maxLength = maxLen
 	Dim As String		char
-	
-	Dim As fb.Image Ptr	thisScreen
-	
+
 	Dim As Integer		boxWidth = __XRES/2
 	Dim As Integer		boxHeight = 96
 	
@@ -402,10 +405,7 @@ Function getUserString( ByVal prompt As String = "?", ByVal maxLen As Integer = 
 		maxLength = (boxWidth-64)/8
 	Endif
 	
-	''
-	thisScreen = imageCreate( __XRES, __YRES )
-	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
-	''
+	stashScreen(thisScreen)
 	
 	Do:Sleep 1,1:Loop Until InKey() = ""
 	
@@ -446,9 +446,7 @@ Function getUserString( ByVal prompt As String = "?", ByVal maxLen As Integer = 
 		Sleep regulateFPS(60),1
 	Loop
 	
-	''
-	Put (0,0), thisScreen, PSET
-	ImageDestroy(thisScreen)
+	restoreScreen(thisScreen)
 	
 	Return ret
 End Function
@@ -471,14 +469,15 @@ Sub userChooser.AddOption( ByVal optionName As String, ByVal jumpLabel As String
 End Sub
 
 Function userChooser.chooseOption( ByVal message As String, ByVal bottom As Boolean = false ) As String
-	Dim As fb.Image Ptr	thisScreen
-	
 	Dim As Integer		boxWidth = __XRES/6
 	Dim As Integer		boxHeight = __YRES/2
 	
-	'' Should be positioned correctly for the dialouge box
 	Dim As Integer		posX = (__XRES/2) + (IIF(__XRES < 512, (__XRES-32)/2, 256)-boxWidth) 
 	Dim As Integer		posY = (__YRES-IIF(__XRES < 512, 128, 192)) - (boxHeight+20)
+	
+	Dim As String		ret
+	
+	stashScreen(thisScreen)
 	
 	If bottom Then
 		boxWidth = __XRES-64
@@ -488,12 +487,6 @@ Function userChooser.chooseOption( ByVal message As String, ByVal bottom As Bool
 		posY = __YRES - (boxHeight + IIF(__XRES < 512, 16, 64))
 	Endif
 	
-	Dim As String		ret
-	
-	'' Save what is on the screen so when the menu closes we can redraw the area under it
-	thisScreen = imageCreate( __XRES, __YRES )
-	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
-	
 	'' Show the correct text underneath
 	If message <> "" Then
 		Dialouge( message, false )
@@ -502,9 +495,7 @@ Function userChooser.chooseOption( ByVal message As String, ByVal bottom As Bool
 	'' Get the selection
 	ret = selectmenu( options(), posX, posY, boxWidth )
 	
-	'' Redraw the screen without the option dialouge
-	Put (0,0), thisScreen, PSET
-	ImageDestroy(thisScreen)
+	restoreScreen(thisScreen)
 	
 	'' Reset the options
 	ReDim options(-1) As _option
