@@ -36,6 +36,7 @@ type timerTrigger
         pauseTime       As Double
         
         repeat          As Boolean
+        inactive        As Boolean
         
         Declare Sub setTimer( ByVal As String, ByVal As Boolean )
         Declare Function getTrigger() As String
@@ -52,7 +53,7 @@ Sub timerTrigger.setTimer( ByVal triggerName As String, ByVal repeat As Boolean 
 End Sub
 
 Function timerTrigger.getTrigger() As String
-        If startTime = 0 Then
+        If inactive Then
                 Return ""
         Endif
         
@@ -60,7 +61,7 @@ Function timerTrigger.getTrigger() As String
                 If repeat Then
                         startTime = timer
                 Else
-                        startTime = 0
+                        inactive = true
                 Endif
                 
                 Return trigger
