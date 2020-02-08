@@ -17,6 +17,10 @@ Option Select
 Quit
 :NewGame
 
+TextInput UserName "What is your name, traveller?" 8
+
+Dialogue "Hello %UserName% !"
+
 // test the inventory function
 Inventory Add UseMedkit "MedKit" 10 "A first aid kit."
 Inventory Add UseBullet "Bullets" 20 "Bullets for a pistol."

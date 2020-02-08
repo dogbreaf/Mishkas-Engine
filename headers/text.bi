@@ -349,10 +349,6 @@ Function getNumberAmount( ByVal minimum As Integer, ByVal maximum As Integer ) A
 	Do
 		ScreenLock
 		menuBox( posX, posY, boxWidth, boxHeight )
-		'Draw String (posX + (boxWidth/2) - 4, posY+8), chr(30), rgb(0,0,0)
-		'Draw String (posX + (boxWidth/2) - 4, posY+boxHeight-12), chr(31), rgb(0,0,0)
-		
-		'Draw String (posX + (boxWidth/2) - (len(str(ret))*4), posY + (boxHeight/2)-4), str(ret), rgb(0,0,0)
 		
 		drawString(posX + (boxWidth/2) - 4, posY+8, chr(30), rgb(0,0,0))
 		drawString(posX + (boxWidth/2) - 4, posY+boxHeight-12, chr(31), rgb(0,0,0))
@@ -388,6 +384,74 @@ Function getNumberAmount( ByVal minimum As Integer, ByVal maximum As Integer ) A
 	Return ret
 End Function
 
+Function getUserString( ByVal prompt As String = "?", ByVal maxLen As Integer = -1 ) As String
+	'' get a string from the user
+	Dim As String		ret
+	Dim As Integer		maxLength = maxLen
+	Dim As String		char
+	
+	Dim As fb.Image Ptr	thisScreen
+	
+	Dim As Integer		boxWidth = __XRES/2
+	Dim As Integer		boxHeight = 96
+	
+	Dim As Integer		posX = (__XRES/2)-(boxWidth/2)
+	Dim As Integer		posY = (__YRES/2)-(boxHeight/2)
+	
+	If maxLen = -1 Then
+		maxLength = (boxWidth-64)/8
+	Endif
+	
+	''
+	thisScreen = imageCreate( __XRES, __YRES )
+	Get (0,0)-(__XRES-1,__YRES-1), thisScreen
+	''
+	
+	Do:Sleep 1,1:Loop Until InKey() = ""
+	
+	Do
+		ScreenLock
+			Put (0,0), thisScreen, PSET
+			
+			menuBox(posX, posY, boxWidth, boxHeight)
+			c_drawText(prompt, posX+32, posY+32, (boxWidth-64)/8)
+			c_drawText(ret & "_", posX+32, posY+42, maxLength)
+		ScreenUnLock
+		
+		char = InKey()
+		
+		If asc(char) > 31 and asc(char) < 128 Then
+			ret += char
+			
+			If len(ret) > maxLength Then
+				ret = Left(ret, maxLength)
+			Endif
+		ElseIf char = chr(8) Then
+			ret = Left(ret, len(ret)-1)
+		Endif
+		
+		If getUserKey(kbd_Quit) Then
+			ret = ""
+			
+			Exit Do
+		ElseIf Multikey(fb.SC_ENTER) Then
+			Do:Sleep 10,1:Loop Until not Multikey(fb.SC_ENTER)
+			Sleep 100,1
+			
+			Exit Do
+		Endif
+		
+		Sleep regulateFPS(60),1
+	Loop
+	
+	''
+	Put (0,0), thisScreen, PSET
+	ImageDestroy(thisScreen)
+	
+	Return ret
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''
 Type userChooser
 	options(Any)	As _option
 	

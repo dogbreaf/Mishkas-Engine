@@ -451,6 +451,18 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 		
 		Return -1
 		
+	Case "TextInput"
+		Dim As Integer		maxLen = IIF(arg(3) = "", -1, val(arg(3)))
+		Dim As String		prompt = arg(2)
+		Dim As String		variableName = arg(1)
+		Dim As String		ret
+		
+		ret = getUserString(prompt, maxLen)
+		
+		thisScript->stack.setVar(variableName, ret)
+		
+		Return -1
+		
 	'''''''''''''''''''
 	Case "Background"
 		'' Splash works better so use it instead
