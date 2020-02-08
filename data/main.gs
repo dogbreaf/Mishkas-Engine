@@ -108,4 +108,3 @@ Include "data/script/pharmacy.gs"
 Include "data/script/shop.gs"
 
 :EndOfGame
-

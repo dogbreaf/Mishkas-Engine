@@ -384,6 +384,12 @@ Function textAndMenuCallback( arg(Any) As String, thisScript As script Ptr ) As 
 	Case "Dialouge","Dialogue"
 		dialouge( arg(1), IIF( arg(2) = "false", false, true) )
 		Return -1
+                
+        Case "TextBox"
+                Dim As Double xpos = val(arg(1))
+                Dim As Double ypos = val(arg(2))
+                
+                textBox(arg(3), xpos, ypos)
 		
 	Case "TextSpeed"
 		textSpeed = val(arg(1))

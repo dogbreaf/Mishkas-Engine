@@ -500,3 +500,21 @@ Function userChooser.chooseOption( ByVal message As String, ByVal bottom As Bool
 	Return ret
 End Function
 
+Sub textBox( ByVal text As String, ByVal x As Double, ByVal y As Double )
+        Dim As Integer		boxWidth = 256
+	Dim As Integer		boxHeight = 96
+        
+        Dim As Integer          posX = (abs(x)/100)*__XRES
+        Dim As Integer          posY = (abs(y)/100)*__YRES
+        
+        If x < 0 Then
+                posX -= boxWidth
+        Endif
+        If y < 0 Then
+                posY -= boxHeight
+        Endif
+        
+        menuBox( posX, posY, boxWidth, boxHeight )
+        c_drawText( text, posX + 16, posY + 16, (boxWidth-32)/8 )
+End Sub
+
