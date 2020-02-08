@@ -26,6 +26,61 @@ Function channelAnd( ByVal p1 As UInteger, ByVal p2 As UInteger, ByVal param As 
 	Return c3.c
 End Function
 
+'' Timer based triggers
+type timerTrigger
+        trigger         As String
+        
+        targetTime      As Integer
+        startTime       As Double
+        
+        pauseTime       As Double
+        
+        repeat          As Boolean
+        
+        Declare Sub setTimer( ByVal As String, ByVal As Boolean )
+        Declare Function getTrigger() As String
+                
+        Declare Sub pauseTimer()
+        Declare Sub startTimer()
+end type
+
+Sub timerTrigger.setTimer( ByVal triggerName As String, ByVal repeat As Boolean )
+        startTime = Timer
+        trigger = triggerName
+        
+        this.repeat = repeat
+End Sub
+
+Function timerTrigger.getTrigger() As String
+        If startTime = 0 Then
+                Return ""
+        Endif
+        
+        If (Timer-startTime)*1000 > targetTime Then                
+                If repeat Then
+                        startTime = timer
+                Else
+                        startTime = 0
+                Endif
+                
+                Return trigger
+        Endif
+        
+        Return ""
+End Function
+
+Sub timerTrigger.pauseTimer()
+        pauseTime = Timer
+End Sub
+
+Sub timerTrigger.startTimer()
+        If pauseTime > 0 Then
+             startTime += ( Timer - pauseTime )
+             
+             pauseTime = 0
+        Endif
+End Sub
+
 '' Handle the tilemap, player and objects in one object
 type room
 	'' The important stuff
@@ -37,6 +92,7 @@ type room
 	marginX		As Integer = ((__XRES/__SCALE)/2)-2
 
 	objects(Any)	As gameObject
+        timers(Any)     As timerTrigger
 	
 	'' Each element is the label in the code to jump to when the player steps onto that square
 	trigger(__MAP_SIZE,__MAP_SIZE)	As String
@@ -84,11 +140,29 @@ type room
 	Declare Sub setLighting( ByVal As String, ByVal As Integer, ByVal As Integer )
 	Declare Sub deleteLight()
 	Declare Sub drawLighting()
+        
+        '' Timed triggers
+        Declare Sub addTimer( ByVal As String, ByVal As Integer, ByVal As Boolean )
+        Declare Sub clearTimers()
 	
 	''
 	Declare Constructor ()
 	Declare Sub Viewport()
 end type
+
+'' Add a timer
+Sub room.addTimer( ByVal trigger As String, ByVal targetTime As Integer, ByVal repeat As Boolean )
+        Dim As Integer count = UBound( this.timers )+1
+        
+        ReDim Preserve this.timers(count) As timerTrigger
+        
+        this.timers(count).targetTime = targetTime
+        this.timers(count).setTimer(trigger, repeat)
+End Sub
+
+Sub room.clearTimers()
+        ReDim this.timers(-1) As timerTrigger
+End Sub
 
 '' Shade everything around the player
 Sub room.setLighting( ByVal imageFile As String, ByVal w As Integer, ByVal h As Integer )
@@ -150,8 +224,9 @@ Sub room.LoadTileMap( ByVal tilemap As String )
 		Next
 	Next
 	
-	' Clear old objects
+	' Clear old objects and timers
 	ReDim this.objects(-1) As gameObject
+        ReDim this.timers(-1) As timerTrigger
 End Sub
 
 Sub room.LoadPlayerSprite( ByVal filename As String, ByVal w As Integer, ByVal h As Integer, ByVal a As Integer = 1 )
@@ -184,6 +259,15 @@ Sub room.RefreshTileMap()
 End Sub
 
 Function room.getTrigger() As String
+        '' Timer triggers ''''''''''''''''''''''''''''''''''''''''''''''''''
+        For i As Integer = 0 to UBound(this.timers)
+                Dim As String tmp = this.timers(i).getTrigger()
+                
+                If tmp <> "" Then
+                        Return tmp
+                Endif
+        Next
+        
 	'' Object triggers '''''''''''''''''''''''''''''''''''''''''''''''''
 	For i As Integer = 0 to UBound(this.objects)
 		If this.objects(i).disabled = false Then

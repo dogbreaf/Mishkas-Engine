@@ -93,6 +93,18 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 		gameRoom.trigger(tgrX,tgrY) = arg(3)
 		
 		Return -1
+                
+        Case "Timer"
+                debugPrint("Set timer " & arg(1) & " for " & arg(2) & "ms")
+                
+                gameRoom.addTimer(arg(1), val(arg(2)), IIF(arg(3) = "true", true, false))
+                Return -1
+                
+        Case "ClearTimers"
+                debugPrint("Clear room triggers...")
+                
+                gameRoom.clearTimers()
+                Return -1
 	
 	'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 	'' Player Control
@@ -315,6 +327,11 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 	'' Main loop
 	'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 	Case "RunGame","ResumeGame"
+                ' Unpause pased triggers
+                For i As Integer = 0 to UBound(gameRoom.timers)
+                        gameRoom.timers(i).startTimer()
+                Next
+                
 		' This is basically the main game loop
 		Do
 			gameRoom.update(roomText)
@@ -335,6 +352,11 @@ Function gameCallback( arg(Any) As String, thisScript As script Ptr ) As Integer
 			
 			Sleep RegulateFPS(30),1
 		Loop Until getUserKey(kbd_Quit, true)
+                
+                '' Pause timers
+                For i As Integer = 0 to UBound(gameRoom.timers)
+                        gameRoom.timers(i).pauseTimer()
+                Next
 		
 		'' Set/update variables for use in the script
 		thisScript->stack.setVar("_PlayerX", gameRoom.playerX)
