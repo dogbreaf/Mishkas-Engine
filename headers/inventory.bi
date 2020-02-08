@@ -54,7 +54,6 @@ Function inventoryManager.getItemID( ByVal trigger As String ) As Integer
 	Dim As Integer count = UBound( this.item )
 	
 	For i As Integer = 0 to count
-		debugPrint( " -> " & this.item(i).trigger & " - " & trigger)
 		If this.item(i).trigger = trigger Then
 			Return i
 		Endif
