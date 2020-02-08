@@ -231,11 +231,8 @@ Function SelectMenu( options(Any) As _option, ByVal x As Integer = -1, ByVal y A
 		For i As Integer = 0 to optionCount			
 			If i = selection then
 				Line ( posX + 8, (posY + 8) + ( i*10 ) )-STEP( boxWidth-16, 10), rgb(0,0,0), BF
-				
-				'Draw String ( posX + 10, (posY + 10) + ( i*10 ) ), options(i).text, rgb(255,255,255)
 				drawString(posX + 10, (posY + 10) + ( i*10 ), options(i).text, rgb(255,255,255))
 			Else	
-				'Draw String ( posX + 10, (posY + 10) + ( i*10 ) ), options(i).text, rgb(0,0,0)
 				drawString(posX + 10, (posY + 10) + ( i*10 ), options(i).text, rgb(0,0,0))
 			Endif
 		Next
