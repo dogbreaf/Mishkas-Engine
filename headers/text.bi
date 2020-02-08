@@ -416,6 +416,8 @@ Function getUserString( ByVal prompt As String = "?", ByVal maxLen As Integer = 
 			menuBox(posX, posY, boxWidth, boxHeight)
 			c_drawText(prompt, posX+32, posY+32, (boxWidth-64)/8)
 			c_drawText(ret & "_", posX+32, posY+42, maxLength)
+			
+			c_drawText("Press Enter " & chr(31), posX+boxWidth-136, posY+boxHeight-32)
 		ScreenUnLock
 		
 		char = InKey()

@@ -17,7 +17,7 @@ Option Select
 Quit
 :NewGame
 
-TextInput UserName "What is your name, traveller?" 8
+TextInput UserName "What is your name, traveller?"
 
 Dialogue "Hello %UserName% !"
 
