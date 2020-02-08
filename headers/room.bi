@@ -256,7 +256,7 @@ Sub room.Update( ByVal floatingText As String = "" )
 		scaleScreen()
 		
 		'' Draw the floating room text (could be HP or whatever
-		drawString(32,32, floatingText, rgb(255,255,255), S_OUTLINE)
+		c_drawText(chr(254) & "97 " & floatingText, 32, 32,,, S_OUTLINE)
 		
 		'' Draw a button prompt for interactive tiles
 		If (trigger(PlayerX, PlayerY) <> "") and map.tiles(PlayerX, PlayerY).flag(3) Then

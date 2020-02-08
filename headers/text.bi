@@ -74,7 +74,12 @@ Sub menuBox( ByVal x As Integer, ByVal y As Integer, ByVal w As Integer, ByVal h
 End Sub
 
 '' Format a text string and draw it
-Sub c_drawText( ByVal text As String, ByVal x As Integer, ByVal y As Integer, ByVal w As Integer = 80, ByVal speed As Integer = 0 )
+Sub c_drawText( ByVal text As String, _
+		ByVal x As Integer, ByVal y As Integer, _
+		ByVal w As Integer = 80, _
+		ByVal speed As Integer = 0, _
+		ByVal style As textStyle = S_NONE )
+		
 	'' Cursor position
 	Dim As Integer	curX
 	Dim As Integer	curY
@@ -111,7 +116,7 @@ Sub c_drawText( ByVal text As String, ByVal x As Integer, ByVal y As Integer, By
 			''
 			
 		Case Else
-			drawString(x + (curX*8), y + (curY*10), char, ansiColor(colour))
+			drawString(x + (curX*8), y + (curY*10), char, ansiColor(colour), style)
 			
 			If underline Then
 				Line (x+(curX*8), y + (curY*10) + 8 )-STEP(8,0), rgb(0,0,0)

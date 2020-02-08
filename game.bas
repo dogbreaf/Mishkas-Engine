@@ -44,11 +44,11 @@
 ' Scale the screen
 #include "headers/screenScale.bi"
 
-' Combines tilemap and sprite stuff
-#include "headers/room.bi"
-
 ' Draws menus and text and stuff
 #include "headers/text.bi"
+
+' Combines tilemap and sprite stuff
+#include "headers/room.bi"
 
 ' Manages inventory
 #include "headers/inventory.bi"

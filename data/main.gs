@@ -23,7 +23,7 @@ Inventory Add UseBullet "Bullets" 20 "Bullets for a pistol."
 Inventory Add UsePistol "Pistol" 1 "A small pistol." true
 
 // For testing
-StatusText "HP \u001b[31m \c3 \c3 \c3 "
+StatusText "HP \u001b[31;1m \c3  \c3  \c3  \n\u001b[37;1m TIME: 10:00"
 
 // Load the main area
 Transition BLINDS
