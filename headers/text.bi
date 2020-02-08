@@ -3,6 +3,69 @@
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Static Shared As Integer	textSpeed = 10
 
+'' Name all of our colors
+enum textColors
+	ansi_black = 30
+	ansi_red
+	ansi_green
+	ansi_yellow
+	ansi_blue
+	ansi_magenta
+	ansi_cyan
+	ansi_white
+	
+	ansi_b_black = 90
+	ansi_b_red
+	ansi_b_green
+	ansi_b_yellow
+	ansi_b_blue
+	ansi_b_magenta
+	ansi_b_cyan
+	ansi_b_white
+end enum
+
+'' convert color names to values
+Function ansiColor( ByVal code As Integer ) As uInteger
+	Select Case code
+	
+	Case ansi_black
+		Return rgb(0,0,0)
+	Case ansi_red
+		Return rgb(170,0,0)
+	Case ansi_green
+		Return rgb(0,170,0)
+	Case ansi_yellow
+		Return rgb(170,85,0)
+	Case ansi_blue
+		Return rgb(0,0,170)
+	Case ansi_magenta
+		Return rgb(170,0,170)
+	Case ansi_cyan
+		Return rgb(0,170,170)
+	Case ansi_white
+		Return rgb(170,170,170)
+	
+	Case ansi_b_black
+		Return rgb(85,85,85)
+	Case ansi_b_red
+		Return rgb(255,85,85)
+	Case ansi_b_green
+		Return rgb(85,255,85)
+	Case ansi_b_yellow
+		Return rgb(255,255,85)
+	Case ansi_b_blue
+		Return rgb(85,85,255)
+	Case ansi_b_magenta
+		Return rgb(255,85,255)
+	Case ansi_b_cyan
+		Return rgb(85,255,255)
+	Case ansi_b_white
+		Return rgb(255,255,255)
+	
+	End Select
+	
+	Return 0
+End Function
 '' Draw the box uesd as a background
 Sub menuBox( ByVal x As Integer, ByVal y As Integer, ByVal w As Integer, ByVal h As Integer )
 	Line (x,y)-STEP(w,h), rgb(255,255,255), BF
@@ -20,6 +83,8 @@ Sub c_drawText( ByVal text As String, ByVal x As Integer, ByVal y As Integer, By
 	
 	Dim As Boolean	escaped, underline
 	
+	Dim As Integer 	colour = textColors.ansi_black
+	
 	For i As integer = 0 to len(text)
 		char = chr( text[i] )
 		
@@ -28,13 +93,25 @@ Sub c_drawText( ByVal text As String, ByVal x As Integer, ByVal y As Integer, By
 		Case chr(10)
 			CurY += 1
 			CurX = 0
+			
+		Case chr(254)
+			Dim As String ansiCode
+                		
+			Do Until (char = " ") or (i = len(text)-1)
+				i += 1
+				
+				char = chr(text[i])
+				
+				ansiCode += char
+			Loop
+			
+			colour = val(ansiCode)
 		
 		Case chr(13)
 			''
 			
 		Case Else
-			'Draw String ( x + (curX*8), y + (curY*10) ), char, rgb(0,0,0)
-			drawString(x + (curX*8), y + (curY*10), char, rgb(0,0,0))
+			drawString(x + (curX*8), y + (curY*10), char, ansiColor(colour))
 			
 			If underline Then
 				Line (x+(curX*8), y + (curY*10) + 8 )-STEP(8,0), rgb(0,0,0)
@@ -61,7 +138,6 @@ End Sub
 '' Wait for the user to press "E"
 Sub waitNext( ByVal posX As Integer = 0, ByVal posY As Integer = 0 )	
 	If posX and posY Then
-		' Draw String ( posX - 64, posY ), "Press " & _KEY_ACTION & " " & Chr(31), rgb(0,0,0)
 		drawString(posX - 64, posY, "Press " & _KEY_ACTION & " " & Chr(31), rgb(0,0,0))
 	Endif
 	

@@ -664,6 +664,31 @@ Function script.stringLiteral( ByVal literal As String) As String
                 	Case "c"
                 		cleartext = false
                 		
+                	Case "u"
+                		Dim As String ansiCode
+                		
+				Do Until (char = " ") or (i = length-1) or (char = "m")
+					i += 1
+					
+					char = chr(literal[i])
+					
+					ansiCode += char
+				Loop
+				
+				' Made sure the escape is correct
+				If Left(ansiCode, 5) = "001b[" Then
+					ansiCode = trim(ansiCode)			' Remove the trailing space
+					ansiCode = Left(ansiCode, len(ansiCode)-1)	' Remove the m
+					ansiCode = Right(ansiCode, len(ansiCode)-5)	' Remove the escape sequence
+					
+					'' If it is a bright color then increase the value by 10
+					If Right(ansiCode, 2) = ";1" Then						
+						ansiCode = str(60 + val(Left(ansiCode, len(ansiCode)-2)))
+					Endif
+					
+					ret += chr(254) & ansiCode
+                		Endif
+                		
                 	Case Else
 	                        ret += char
 	                        
