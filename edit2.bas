@@ -65,7 +65,12 @@
 
 '' Loading Screen
 ScreenRes __XRES__, __YRES__, 32
-WindowTitle "Editor"
+
+#ifdef __FB_64BIT__
+WindowTitle "Editor (x64)"
+#else
+WindowTitle "Editor (x32)"
+#endif
 
 Declare Sub LoadingIndicator( ByVal As String = "Loading...", ByVal As String = "" )
 

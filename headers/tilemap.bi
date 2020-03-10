@@ -28,7 +28,12 @@ Enum FlagType
 End Enum
 
 Type tile
-	tID(__LAYER_COUNT__) As Integer
+        #ifndef __FB_64BIT__
+        '' Use longint for compatability with the 64bit version
+	tID(__LAYER_COUNT__) As LongInt
+        #else
+        tID(__LAYER_COUNT__) As Integer
+        #endif
 
 	'' Flags
 	solid	As Byte
@@ -39,12 +44,23 @@ End Type
 Type tilemapHeader
 	magic		As String*10 = __FH_MAGIC__
 	
-	tmWidth		As Integer = __MAP_SIZE
+        #ifndef __FB_64BIT__
+        '' 64bit compatability
+	tmWidth		As LongInt = __MAP_SIZE
+	tmHeight	As LongInt = __MAP_SIZE
+        
+	tileSize	As LongInt = __TILE_SIZE
+        
+        reservedInt(7)  As LongInt
+        #else
+        
+        tmWidth		As Integer = __MAP_SIZE
 	tmHeight	As Integer = __MAP_SIZE
-	
+        
 	tileSize	As Integer = __TILE_SIZE
-	
-	reservedInt(7)	As Integer
+        
+        reservedInt(7)  As Integer
+        #endif
 	
 	ReservedString	As String*32
 End Type
